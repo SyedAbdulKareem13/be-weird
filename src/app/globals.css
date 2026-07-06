@@ -1,26 +1,255 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   SPECIMEN ARCHIVE — design tokens
+   WEIRD mode (default) / BORING mode via html[data-mode]
+   ============================================================ */
+
+:root,
+html[data-mode="weird"] {
+  --ink: #0e0c15;
+  --bone: #efeae3;
+  --hazard: #ff4d00;
+  --ultraviolet: #6e4bff;
+  --taxi: #ffd400;
+  --specimen: #101322;
+  --line: rgba(239, 234, 227, 0.14);
+  --line-strong: rgba(239, 234, 227, 0.3);
+}
+
+html[data-mode="boring"] {
+  --ink: #16150f;
+  --bone: #faf8f2;
+  --hazard: #1f4fd8;
+  --ultraviolet: #1f4fd8;
+  --taxi: #1f4fd8;
+  --specimen: #ffffff;
+  --line: rgba(22, 21, 15, 0.15);
+  --line-strong: rgba(22, 21, 15, 0.35);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-bone: var(--bone);
+  --color-hazard: var(--hazard);
+  --color-ultraviolet: var(--ultraviolet);
+  --color-taxi: var(--taxi);
+  --color-specimen: var(--specimen);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --font-display: var(--font-bricolage), system-ui, sans-serif;
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ---------- base ---------- */
+
+html {
+  background: var(--ink);
+}
+
+html[data-mode="weird"] {
+  color-scheme: dark;
+}
+
+html[data-mode="boring"] {
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  overflow-x: clip;
+}
+
+/* boring mode is print-like: bone paper, ink text */
+html[data-mode="boring"] body {
+  background: var(--bone);
+  color: var(--ink);
+}
+
+::selection {
+  background: var(--ultraviolet);
+  color: var(--bone);
+}
+
+html[data-mode="boring"] ::selection {
+  background: var(--hazard);
+  color: var(--bone);
+}
+
+:focus-visible {
+  outline: 2px solid var(--hazard);
+  outline-offset: 3px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--hazard) var(--ink);
+}
+
+/* hide native cursor only in weird mode on fine pointers */
+@media (pointer: fine) {
+  html[data-mode="weird"] body,
+  html[data-mode="weird"] a,
+  html[data-mode="weird"] button {
+    cursor: none;
+  }
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* ============================================================
+   WEIRD DEVICE LIBRARY
+   ============================================================ */
+
+/* mono microlabel: FILE №004 · CLASS: SIDE-PROJECT */
+.specimen-label {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+/* rotated bordered stamp — ultraviolet garnish, 1-2 per section */
+.stamp {
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ultraviolet);
+  border: 1.5px solid var(--ultraviolet);
+  padding: 0.35em 0.9em;
+  display: inline-block;
+  transform: rotate(-4deg);
+  border-radius: 2px;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40'%3E%3Cfilter id='r'%3E%3CfeTurbulence baseFrequency='0.6' numOctaves='2'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0.55 1 1 1 1 1 1 1'/%3E%3C/feComponentTransfer%3E%3CfeComposite operator='in' in2='SourceGraphic'/%3E%3C/filter%3E%3Crect width='120' height='40' filter='url(%23r)' /%3E%3C/svg%3E");
+  mask-size: 120px 40px;
+}
+
+/* cut-here dashed border for specimen cards */
+.cut-here {
+  position: relative;
+  border: 1.5px dashed var(--line-strong);
+}
+
+.cut-here::before {
+  content: "✂";
+  position: absolute;
+  top: -0.8em;
+  left: 1.25rem;
+  font-size: 0.9rem;
+  background: var(--ink);
+  padding: 0 0.4em;
+  color: var(--bone);
+  opacity: 0.6;
+}
+
+html[data-mode="boring"] .cut-here::before {
+  background: var(--bone);
+  color: var(--ink);
+}
+
+/* redaction bar — reveals on hover via DecryptedText inside */
+.redaction {
+  background: var(--bone);
+  color: var(--bone);
+  user-select: none;
+}
+
+/* outlined giant text */
+.text-stroke {
+  -webkit-text-stroke: 1.5px var(--bone);
+  color: transparent;
+}
+
+html[data-mode="boring"] .text-stroke {
+  -webkit-text-stroke: 1.5px var(--ink);
+}
+
+/* asterisk divider */
+.asterisk-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-space-mono), monospace;
+  color: var(--hazard);
+}
+
+.asterisk-divider::before,
+.asterisk-divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- shared keyframes ---------- */
+
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes blink-caret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes grain-jitter {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-2%, 2%); }
+  40% { transform: translate(2%, -1%); }
+  60% { transform: translate(-1%, -2%); }
+  80% { transform: translate(1%, 2%); }
+}
+
+@keyframes glitch-shift-a {
+  0%, 100% { clip-path: inset(0 0 92% 0); transform: translate(-2px, -2px); }
+  20% { clip-path: inset(30% 0 45% 0); transform: translate(3px, 1px); }
+  40% { clip-path: inset(65% 0 12% 0); transform: translate(-3px, 2px); }
+  60% { clip-path: inset(10% 0 70% 0); transform: translate(2px, -1px); }
+  80% { clip-path: inset(48% 0 28% 0); transform: translate(-1px, 2px); }
+}
+
+@keyframes glitch-shift-b {
+  0%, 100% { clip-path: inset(85% 0 4% 0); transform: translate(2px, 1px); }
+  25% { clip-path: inset(12% 0 78% 0); transform: translate(-3px, -2px); }
+  50% { clip-path: inset(55% 0 30% 0); transform: translate(3px, 2px); }
+  75% { clip-path: inset(25% 0 60% 0); transform: translate(-2px, 1px); }
+}
+
+/* ---------- accessibility ---------- */
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 1rem;
+  z-index: 200;
+  background: var(--hazard);
+  color: var(--ink);
+  font-family: var(--font-space-mono), monospace;
+  font-size: 0.75rem;
+  padding: 0.6em 1.2em;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
