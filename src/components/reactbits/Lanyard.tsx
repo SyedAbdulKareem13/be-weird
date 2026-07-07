@@ -241,6 +241,8 @@ function Band({
   );
   const [dragged, drag] = useState<false | THREE.Vector3>(false);
   const [hovered, hover] = useState(false);
+  // yaw target the card steers toward: 0 = front, 1 = back (quaternion y at 180°)
+  const flipTarget = useRef(0);
 
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 1]);
   useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 1]);
@@ -278,6 +280,19 @@ function Band({
     return () => window.removeEventListener('archive-yank', yank);
   }, []);
 
+  // "Flip the card": toggle the yaw target and give it a nudge — the
+  // steering term in useFrame rotates it the rest of the way and holds it.
+  useEffect(() => {
+    const flip = () => {
+      flipTarget.current = flipTarget.current === 0 ? 1 : 0;
+      if (!card.current) return;
+      card.current.wakeUp();
+      card.current.applyTorqueImpulse({ x: 0, y: flipTarget.current === 1 ? 1.5 : -1.5, z: 0 }, true);
+    };
+    window.addEventListener('archive-flip', flip);
+    return () => window.removeEventListener('archive-flip', flip);
+  }, []);
+
   useFrame((state, delta) => {
     if (dragged && typeof dragged !== 'boolean') {
       vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
@@ -303,7 +318,7 @@ function Band({
       band.current.geometry.setPoints(curve.getPoints(isMobile ? 16 : 32));
       ang.copy(card.current.angvel());
       rot.copy(card.current.rotation());
-      card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z }, true);
+      card.current.setAngvel({ x: ang.x, y: ang.y - (rot.y - flipTarget.current) * 0.25, z: ang.z }, true);
     }
   });
 
@@ -350,8 +365,8 @@ function Band({
                 map-anisotropy={16}
                 clearcoat={isMobile ? 0 : 1}
                 clearcoatRoughness={0.15}
-                roughness={0.9}
-                metalness={0.8}
+                roughness={0.85}
+                metalness={0.3}
               />
             </mesh>
             <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />

@@ -89,6 +89,12 @@ export default function CommandPalette() {
     window.setTimeout(() => window.dispatchEvent(new Event("archive-yank")), 900);
   }, []);
 
+  const flip = useCallback(() => {
+    setOpen(false);
+    document.getElementById("badge")?.scrollIntoView({ behavior: "smooth" });
+    window.setTimeout(() => window.dispatchEvent(new Event("archive-flip")), 900);
+  }, []);
+
   return (
     <>
       <Command.Dialog
@@ -149,6 +155,12 @@ export default function CommandPalette() {
               className="cursor-pointer px-3 py-2 text-xs tracking-[0.2em] uppercase data-[selected=true]:bg-hazard data-[selected=true]:text-ink"
             >
               YANK THE LANYARD
+            </Command.Item>
+            <Command.Item
+              onSelect={flip}
+              className="cursor-pointer px-3 py-2 text-xs tracking-[0.2em] uppercase data-[selected=true]:bg-hazard data-[selected=true]:text-ink"
+            >
+              FLIP THE BADGE
             </Command.Item>
             <Command.Item
               onSelect={barrelRoll}

@@ -38,7 +38,7 @@ html[data-mode="weird"] .badge-swing {
 `;
 
 /** Fallback for mobile + boring mode + while the 3D chunk loads. */
-function StaticBadge() {
+function StaticBadge({ flipped = false }: { flipped?: boolean }) {
   return (
     <div className="flex h-full w-full flex-col items-center overflow-hidden">
       <div
@@ -50,12 +50,27 @@ function StaticBadge() {
           aria-hidden="true"
           className="h-20 w-[2px] bg-gradient-to-b from-bone/50 to-hazard md:h-28"
         />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/assets/lanyard/badge-front.png"
-          alt="Specimen badge: SYED ABDUL KAREEM, full stack developer, archive №13, QR code to GitHub"
-          className="w-[260px] rotate-[-3deg] border border-line-strong shadow-2xl md:w-[300px]"
-        />
+        {/* two-faced card that flips in CSS 3D */}
+        <div style={{ perspective: "1200px" }}>
+          <div
+            className="relative transition-transform duration-700 [transform-style:preserve-3d]"
+            style={{ transform: `rotateY(${flipped ? 180 : 0}deg)` }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/assets/lanyard/badge-front.png"
+              alt="Specimen badge: SYED ABDUL KAREEM, forward deployed engineer, archive №13, QR code to GitHub"
+              className="w-[280px] rotate-[-3deg] border border-line-strong shadow-2xl [backface-visibility:hidden] md:w-[320px]"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/assets/lanyard/badge-back.png"
+              alt="Badge reverse: SYD/13, stamped APPROVED-ISH, if found return to the internet"
+              className="absolute inset-0 h-full w-full rotate-[3deg] border border-line-strong shadow-2xl [backface-visibility:hidden]"
+              style={{ transform: "rotateY(180deg)" }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -66,6 +81,7 @@ export default function BadgeSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
   const [near, setNear] = useState<boolean>(false);
+  const [staticFlipped, setStaticFlipped] = useState<boolean>(false);
 
   // viewport >= 768px, kept live so shrinking the window drops the 3D scene
   useEffect(() => {
@@ -95,6 +111,26 @@ export default function BadgeSection() {
   }, [near]);
 
   const showLanyard = isWeird && isDesktop && near;
+
+  // WebGL contexts can be reclaimed by the browser under GPU pressure; when
+  // that happens the canvas freezes empty. Remount the scene (max 3 times).
+  const [glGeneration, setGlGeneration] = useState<number>(0);
+  useEffect(() => {
+    if (!showLanyard) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const onLost = (event: Event) => {
+      event.preventDefault();
+      window.setTimeout(() => {
+        setGlGeneration((generation) =>
+          generation < 3 ? generation + 1 : generation
+        );
+      }, 500);
+    };
+    // capture: the event fires on the canvas, which mounts later
+    el.addEventListener("webglcontextlost", onLost, true);
+    return () => el.removeEventListener("webglcontextlost", onLost, true);
+  }, [showLanyard]);
 
   return (
     <section
@@ -126,22 +162,37 @@ export default function BadgeSection() {
               className="badge-lanyard-mount absolute inset-0"
             >
               <Lanyard
+                key={glGeneration}
                 frontImage="/assets/lanyard/badge-front.png"
                 backImage="/assets/lanyard/badge-back.png"
                 lanyardImage="/assets/lanyard/strap.png"
                 imageFit="cover"
                 transparent
-                position={[0, 0, 16]}
+                position={[0, 0, 13]}
                 fov={24}
               />
             </div>
           ) : (
-            <StaticBadge />
+            <StaticBadge flipped={staticFlipped} />
           )}
         </div>
 
         {/* card contents as real text + real link, present in both modes */}
-        <div className="mt-6 flex flex-col items-center gap-2 text-center">
+        <div className="mt-6 flex flex-col items-center gap-3 text-center">
+          <button
+            type="button"
+            data-cursor="INSPECT"
+            onClick={() => {
+              if (showLanyard) {
+                window.dispatchEvent(new Event("archive-flip"));
+              } else {
+                setStaticFlipped((f) => !f);
+              }
+            }}
+            className="border border-hazard px-5 py-2.5 font-[family-name:var(--font-space-mono)] text-xs tracking-[0.2em] text-hazard uppercase transition-colors hover:bg-hazard hover:text-ink"
+          >
+            FLIP THE CARD ⟲
+          </button>
           <p className="specimen-label">{badge.cardLines.join(" · ")}</p>
           <a
             href={badge.qrTarget}
