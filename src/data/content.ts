@@ -34,9 +34,9 @@ export const fieldNotes = {
   stamp: "OBSERVATION LOG",
   headline: "MOSTLY HARMLESS. OCCASIONALLY BRILLIANT.",
   manifesto:
-    "Four years inside enterprise CRM taught me how software behaves at scale — 200-plus micro-frontends, config-driven UIs, systems that cannot go down. Nights taught me the opposite lesson: software should also make you feel something. This archive holds both. The classified files pay the bills. The exhibits keep me weird.",
+    "Four years inside enterprise CRM taught me how software behaves at scale — multi-tenant platforms, config-driven UIs, systems that cannot go down. Nights taught me the opposite lesson: software should also make you feel something. This archive holds both. The classified files pay the bills. The exhibits keep me weird.",
   facts: [
-    "EXP: 3.5+ YRS · 3 PROMOTIONS",
+    "EXP: 3.5+ YRS",
     "CURRENT HOST: KEBS · 4 PRODUCT LINES",
     "DIET: 100G PROTEIN/DAY",
     "KNOWN WEAKNESS: SIDE PROJECTS",
@@ -228,8 +228,8 @@ export const incidents: Incident[] = [
 
 export const countUpStats = [
   { value: 4, suffix: "", label: "PRODUCT LINES OWNED" },
-  { value: 3, suffix: "", label: "PROMOTIONS IN 3.5 YRS" },
-  { value: 3800, suffix: "+", label: "SANITIZER CALLS, ONE BUG" },
+  { value: 10, suffix: "+", label: "PROJECTS WORKED ON" },
+  { value: 5, suffix: "+", label: "SHARED MODULES & OPEN LIBS" },
   { value: Infinity, suffix: "", label: "CURIOSITY" },
 ];
 
