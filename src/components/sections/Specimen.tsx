@@ -82,7 +82,7 @@ export default function Specimen() {
       <p className="specimen-label absolute top-20 left-6 md:left-12 lg:left-20">
         {heroLabels.topLeft}
       </p>
-      <p className="specimen-label absolute top-20 right-6 text-right md:right-12 lg:right-20">
+      <p className="specimen-label absolute top-20 right-6 hidden text-right md:right-12 md:block lg:right-20">
         {heroLabels.topRight}
       </p>
       <p className="specimen-label absolute bottom-24 left-6 md:left-12 lg:left-20">

@@ -111,7 +111,11 @@ html.lenis body {
 
 /* ============================================================
    WEIRD DEVICE LIBRARY
+   (inside @layer components so Tailwind utilities like `hidden`
+   can still override display/spacing on individual uses)
    ============================================================ */
+
+@layer components {
 
 /* mono microlabel: FILE №004 · CLASS: SIDE-PROJECT */
 .specimen-label {
@@ -193,6 +197,8 @@ html[data-mode="boring"] .text-stroke {
   flex: 1;
   border-top: 1px solid var(--line);
 }
+
+} /* end @layer components */
 
 /* ---------- shared keyframes ---------- */
 

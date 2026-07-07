@@ -131,8 +131,8 @@ export default function BadgeSection() {
                 lanyardImage="/assets/lanyard/strap.png"
                 imageFit="cover"
                 transparent
-                position={[0, 0, 24]}
-                fov={22}
+                position={[0, 0, 16]}
+                fov={24}
               />
             </div>
           ) : (
