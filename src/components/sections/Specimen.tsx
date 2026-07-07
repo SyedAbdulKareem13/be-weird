@@ -86,7 +86,7 @@ export default function Specimen() {
         {heroLabels.topRight}
       </p>
       <span className="stamp absolute top-28 right-8 hidden rotate-6 md:inline-block lg:right-24">
-        100% ORGANIC CODE
+        58% ORGANIC CODE
       </span>
 
       {/* everything below lives in flow — no layer can overlap another */}
