@@ -40,6 +40,14 @@ export default function CommandPalette() {
           return !o;
         });
       }
+      // Ctrl+Shift+I — you tried to inspect the specimen; the specimen
+      // inspects you instead. (F12 still opens the real DevTools.)
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
+        e.preventDefault();
+        setOpen(false);
+        play("boot");
+        setInterrogating(true);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

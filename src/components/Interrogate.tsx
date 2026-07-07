@@ -20,32 +20,82 @@ const TRANSCRIPT: QA[] = [
   {
     q: "What does the specimen actually do?",
     a: "Forward Deployed Engineer at KEBS. Owns four product lines end to end — CRM, People Allocation, Timesheet, Integrations. Takes requirements on client calls, ships them, stays through go-live. The weird stuff happens after hours.",
-    keywords: ["do", "job", "work", "role", "kebs"],
+    keywords: ["do", "does", "job", "work", "role", "kebs", "day"],
+  },
+  {
+    q: "What is a Forward Deployed Engineer?",
+    a: "The engineer they send TO the client. Sits between enterprise customers and the codebase: takes requirements on the call, designs the solution, builds it across Angular and Node, and stays through UAT and go-live. Half diplomat, half compiler.",
+    keywords: ["forward", "deployed", "fde", "title", "engineer"],
   },
   {
     q: "Is the specimen any good?",
     a: "Intern to Forward Deployed Engineer in 3.5 years. Complex features in 4–5 days with zero regressions. The libraries it built are now standard across the platform. Draw your own conclusions, researcher.",
-    keywords: ["good", "skill", "senior", "experience", "years"],
+    keywords: ["good", "skill", "skilled", "senior", "experience", "years", "best"],
+  },
+  {
+    q: "What's the hardest bug it ever fixed?",
+    a: "A one-second UI freeze on the heaviest CRM list view. Traced it to 3,800+ repeated HTML-sanitizer calls inside a single request handler. Replaced innerHTML bindings with real templates, added virtual scrolling. The list now scrolls like it owes someone money.",
+    keywords: ["bug", "hardest", "fix", "fixed", "debug", "freeze", "performance"],
   },
   {
     q: "Angular or React?",
     a: "Both. Angular pays the bills at enterprise scale. React/Next.js builds the weird internet things. The specimen refuses to join the war.",
-    keywords: ["angular", "react", "next", "framework", "vue"],
+    keywords: ["angular", "react", "next", "framework", "vue", "svelte"],
+  },
+  {
+    q: "What's in the toolbox?",
+    a: "By day: Angular, RxJS, Node, Express, MongoDB, MySQL, Docker, Jenkins, AWS. By night: Next.js, TypeScript, Supabase, Prisma, GSAP, three.js. At all hours: an unhealthy attachment to the terminal.",
+    keywords: ["stack", "tech", "tools", "toolbox", "technologies", "typescript", "node"],
   },
   {
     q: "Does it do AI?",
     a: "GPT-backed natural-language search in a production CRM, LangChain, prompt engineering, and this very archive was built pair-programming with an AI. 58% organic, remember.",
-    keywords: ["ai", "gpt", "llm", "langchain", "ml", "openai"],
+    keywords: ["ai", "gpt", "llm", "langchain", "ml", "openai", "artificial"],
+  },
+  {
+    q: "Tell me about Manzil One.",
+    a: "A multi-tenant CRM & quotation SaaS built solo — the lead-to-cash pipeline it ships at work, rebuilt from a blank folder. 11-stage pipeline, live margin math, four-step approval chains. Full dossier: /exhibits/manzil-one. Yes, that's a real link.",
+    keywords: ["manzil", "crm", "saas", "project", "projects", "syncwave", "side"],
+  },
+  {
+    q: "Why 'BE WEIRD'?",
+    a: "Four years of enterprise software taught the specimen how systems behave. Nights taught it that software should also make you feel something. Normal is a settings default. This archive is the counter-argument.",
+    keywords: ["weird", "why", "name", "theme", "philosophy"],
+  },
+  {
+    q: "What happens if I pull the lever?",
+    a: "The entire archive calms down into a clean, recruiter-grade CV. Serif type, navy accents, zero physics. Pull it again and the weird comes back. Fully reversible. Mostly.",
+    keywords: ["lever", "pull", "boring", "mode", "recruiter"],
+  },
+  {
+    q: "Who built this archive?",
+    a: "The specimen, pair-programming with an AI it refuses to name. Next.js 16, GSAP, anime.js, Motion, a real physics engine for the badge, and synthesized WebAudio for the clunks. 58% organic code, stamped and certified.",
+    keywords: ["built", "made", "site", "portfolio", "archive", "this"],
+  },
+  {
+    q: "Where is the specimen located?",
+    a: "Tamil Nadu, India. Operates on IST (UTC+5:30), collaborates across whatever timezone the interesting problem lives in.",
+    keywords: ["where", "located", "location", "remote", "timezone", "india"],
+  },
+  {
+    q: "What does the specimen eat?",
+    a: "100 grams of protein a day, logged with the same rigor as its commit history. The caffeine intake is classified under a separate file.",
+    keywords: ["eat", "food", "diet", "protein", "coffee", "caffeine"],
+  },
+  {
+    q: "Is the specimen dangerous?",
+    a: "MOSTLY HARMLESS. OCCASIONALLY BRILLIANT. The archive stands by both claims. Known attack vectors: scope creep, untested code, and the phrase 'quick call'.",
+    keywords: ["dangerous", "harmless", "safe", "threat"],
   },
   {
     q: "Can we hire the specimen?",
     a: "STATUS: OPEN TO INTERESTING PROBLEMS. Coordinates: syedazeeem.13@gmail.com. Handle with curiosity.",
-    keywords: ["hire", "job", "available", "contact", "email", "recruit", "salary"],
+    keywords: ["hire", "hiring", "available", "contact", "email", "recruit", "salary", "opportunity"],
   },
   {
     q: "Does the specimen do weekends?",
     a: "[REDACTED]",
-    keywords: ["weekend", "overtime", "hours", "sleep"],
+    keywords: ["weekend", "weekends", "overtime", "sleep", "dream", "rest"],
   },
 ];
 
@@ -140,11 +190,19 @@ export default function Interrogate({
     const text = input.trim();
     if (!text || busy) return;
     setInput("");
-    const lower = text.toLowerCase();
-    const match = TRANSCRIPT.find((qa) =>
-      qa.keywords.some((k) => lower.includes(k))
-    );
-    ask(text, match ? match.a : FALLBACK);
+    // whole-word matching, best match wins — "do" must be the word "do",
+    // and a question hitting 3 keywords beats one hitting 1
+    const words = new Set(text.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
+    let best: QA | null = null;
+    let bestScore = 0;
+    for (const qa of TRANSCRIPT) {
+      const score = qa.keywords.filter((k) => words.has(k)).length;
+      if (score > bestScore) {
+        bestScore = score;
+        best = qa;
+      }
+    }
+    ask(text, best ? best.a : FALLBACK);
   };
 
   if (!open) return null;
@@ -212,7 +270,7 @@ export default function Interrogate({
         </div>
 
         {/* suggested questions */}
-        <div className="flex flex-wrap gap-2 border-t border-line px-4 py-3">
+        <div className="flex max-h-[22vh] flex-wrap gap-2 overflow-y-auto border-t border-line px-4 py-3">
           {TRANSCRIPT.map((qa) => (
             <button
               key={qa.q}
