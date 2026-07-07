@@ -35,7 +35,7 @@ type Particle = {
   fill: string;
 };
 
-const MAX_PARTICLES_DESKTOP = 3000;
+const MAX_PARTICLES_DESKTOP = 4200;
 const MAX_PARTICLES_MOBILE = 1200;
 const REPEL_RADIUS = 90;
 const REPEL_RADIUS_SQ = REPEL_RADIUS * REPEL_RADIUS;
@@ -223,12 +223,12 @@ export default function ParticleTypography({
         "#FF4D00"
       );
       const palette = [
-        rgba(bone, 0.22),
-        rgba(bone, 0.34),
-        rgba(bone, 0.46),
-        rgba(bone, 0.6),
+        rgba(bone, 0.38),
+        rgba(bone, 0.55),
+        rgba(bone, 0.72),
+        rgba(bone, 0.9),
       ];
-      const accentFill = rgba(hazard, 0.9);
+      const accentFill = rgba(hazard, 0.95);
 
       const next: Particle[] = new Array(targets.length);
       for (let i = 0; i < targets.length; i++) {
@@ -243,7 +243,7 @@ export default function ParticleTypography({
           ty: t.y,
           k: 0.015 + Math.random() * 0.025,
           drag: 0.85 + Math.random() * 0.05,
-          size: 1 + Math.random() * 1.4,
+          size: 1.3 + Math.random() * 1.7,
           fill:
             Math.random() < ACCENT_RATIO
               ? accentFill

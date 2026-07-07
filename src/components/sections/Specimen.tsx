@@ -76,39 +76,30 @@ export default function Specimen() {
   return (
     <section
       id="specimen"
-      className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden px-6 pt-24 pb-16 md:px-12 lg:px-20"
+      className="relative flex min-h-[100svh] flex-col overflow-hidden px-6 pt-24 md:px-12 lg:px-20"
     >
-      {/* corner labels */}
+      {/* top corner labels */}
       <p className="specimen-label absolute top-20 left-6 md:left-12 lg:left-20">
         {heroLabels.topLeft}
       </p>
       <p className="specimen-label absolute top-20 right-6 hidden text-right md:right-12 md:block lg:right-20">
         {heroLabels.topRight}
       </p>
-      <p className="specimen-label absolute bottom-24 left-6 md:left-12 lg:left-20">
-        {heroLabels.bottomLeft}
-      </p>
-      <p className="specimen-label absolute right-6 bottom-24 text-right md:right-12 lg:right-20">
-        <ISTClock />
-      </p>
-
       <span className="stamp absolute top-28 right-8 hidden rotate-6 md:inline-block lg:right-24">
         100% ORGANIC CODE
       </span>
 
-      <div className="mx-auto w-full max-w-[1400px]">
-        {/* particle BE WEIRD, floating above the name */}
+      {/* everything below lives in flow — no layer can overlap another */}
+      <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col justify-center">
+        {/* particle BE WEIRD, its own band above the name */}
         <WeirdOnly>
-          <div className="pointer-events-none absolute inset-x-0 top-[12%] h-[34vh]">
-            <ParticleTypography
-              text="BE WEIRD"
-              className="h-full w-full"
-            />
+          <div className="pointer-events-none h-[20vh] min-h-[140px] w-full">
+            <ParticleTypography text="BE WEIRD" className="h-full w-full" />
           </div>
         </WeirdOnly>
 
-        {/* the name — pressure type owns the viewport */}
-        <div className="relative mt-[16vh] h-[24vw] max-h-[360px] min-h-[120px] w-full">
+        {/* the name — pressure type owns its band */}
+        <div className="relative mt-2 h-[13vw] max-h-[300px] min-h-[100px] w-full md:mt-4">
           <WeirdOnly
             fallback={
               <h1 className="font-[family-name:var(--font-bricolage)] text-[clamp(2.5rem,9vw,7rem)] leading-none font-bold uppercase">
@@ -134,7 +125,7 @@ export default function Specimen() {
         </div>
 
         {/* subline + CTA */}
-        <div className="mt-10 flex flex-col items-start gap-8 md:mt-14 md:flex-row md:items-end md:justify-between">
+        <div className="mt-10 flex flex-col items-start gap-8 md:mt-12 md:flex-row md:items-end md:justify-between">
           <p
             ref={sublineRef}
             className="max-w-xl text-lg leading-relaxed opacity-90 md:text-xl"
@@ -155,14 +146,22 @@ export default function Specimen() {
         </div>
       </div>
 
-      {/* caution ticker along the bottom edge */}
-      <div className="absolute inset-x-0 bottom-0">
+      {/* bottom labels row, always clear of the ticker below */}
+      <div className="mx-auto mt-10 flex w-full max-w-[1400px] items-end justify-between pb-3">
+        <p className="specimen-label">{heroLabels.bottomLeft}</p>
+        <p className="specimen-label text-right">
+          <ISTClock />
+        </p>
+      </div>
+
+      {/* caution ticker — last flow element, full-bleed */}
+      <div className="-mx-6 md:-mx-12 lg:-mx-20">
         <WeirdOnly fallback={<hr className="border-line" />}>
           <div aria-hidden="true" className="text-hazard/80">
             <CurvedLoop
               marqueeText={tickerText}
               speed={1.5}
-              curveAmount={80}
+              curveAmount={26}
               direction="left"
               interactive
               className="fill-current"
