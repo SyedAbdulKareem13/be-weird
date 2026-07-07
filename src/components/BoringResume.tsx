@@ -12,6 +12,7 @@ import {
   exhibits,
   skillGroups,
 } from "@/data/content";
+import PrintButton from "@/components/PrintButton";
 
 const NAVY = "text-[#1F4FD8]";
 const RULE = "border-t border-[#16150F]/15";
@@ -82,6 +83,7 @@ export default function BoringResume() {
             >
               Résumé (PDF) ↓
             </a>
+            <PrintButton />
           </div>
         </header>
 

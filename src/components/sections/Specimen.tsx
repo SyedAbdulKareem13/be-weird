@@ -7,14 +7,57 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, SCRAMBLE_CHARS } from "@/lib/gsap";
 import { useIsWeird } from "@/lib/mode-store";
-import { identity, heroLabels, tickerPhrases } from "@/data/content";
+import {
+  identity,
+  heroLabels,
+  tickerPhrases,
+  rotatingRoles,
+} from "@/data/content";
 import WeirdOnly from "@/components/WeirdOnly";
 import ParticleTypography from "@/components/fx/ParticleTypography";
 import TextPressure from "@/components/reactbits/TextPressure";
 import CurvedLoop from "@/components/reactbits/CurvedLoop";
 import Magnet from "@/components/reactbits/Magnet";
+
+/** "CLASSIFICATION: <role>" — scrambles into the next role every ~2.8s. */
+function RotatingRole() {
+  const isWeird = useIsWeird();
+  const roleRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (!isWeird) return;
+    const el = roleRef.current;
+    if (!el) return;
+    let index = 0;
+    const interval = window.setInterval(() => {
+      index = (index + 1) % rotatingRoles.length;
+      gsap.to(el, {
+        duration: 0.5,
+        scrambleText: {
+          text: rotatingRoles[index],
+          chars: SCRAMBLE_CHARS,
+          speed: 0.9,
+        },
+      });
+    }, 2800);
+    return () => {
+      window.clearInterval(interval);
+      gsap.killTweensOf(el);
+      el.textContent = rotatingRoles[0];
+    };
+  }, [isWeird]);
+
+  return (
+    <p className="h-5 overflow-hidden font-[family-name:var(--font-space-mono)] text-xs tracking-[0.2em] whitespace-nowrap text-hazard uppercase">
+      CLASSIFICATION:{" "}
+      <span ref={roleRef} suppressHydrationWarning>
+        {rotatingRoles[0]}
+      </span>
+    </p>
+  );
+}
 
 function ISTClock() {
   const [time, setTime] = useState("--:-- IST");
@@ -126,12 +169,12 @@ export default function Specimen() {
 
         {/* subline + CTA */}
         <div className="mt-10 flex flex-col items-start gap-8 md:mt-12 md:flex-row md:items-end md:justify-between">
-          <p
-            ref={sublineRef}
-            className="max-w-xl text-lg leading-relaxed opacity-90 md:text-xl"
-          >
-            {identity.heroSubline}
-          </p>
+          <div ref={sublineRef} className="flex max-w-xl flex-col gap-3">
+            <p className="text-lg leading-relaxed opacity-90 md:text-xl">
+              {identity.heroSubline}
+            </p>
+            <RotatingRole />
+          </div>
           <div ref={ctaRef}>
             <Magnet padding={60} magnetStrength={3}>
               <a

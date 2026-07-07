@@ -20,6 +20,12 @@ interface Spark {
   startTime: number;
 }
 
+/**
+ * Perf-tuned variant of the React Bits original: the canvas is fixed to the
+ * VIEWPORT (the upstream version sized it to its parent — the entire page,
+ * tens of thousands of pixels tall) and the rAF loop only runs while sparks
+ * are alive instead of forever.
+ */
 const ClickSpark: React.FC<ClickSparkProps> = ({
   sparkColor = '#fff',
   sparkSize = 10,
@@ -32,37 +38,26 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sparksRef = useRef<Spark[]>([]);
-  const startTimeRef = useRef<number | null>(null);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const parent = canvas.parentElement;
-    if (!parent) return;
-
     let resizeTimeout: ReturnType<typeof setTimeout>;
-
     const resizeCanvas = () => {
-      const { width, height } = parent.getBoundingClientRect();
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-      }
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     };
-
     const handleResize = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(resizeCanvas, 100);
     };
 
-    const ro = new ResizeObserver(handleResize);
-    ro.observe(parent);
-
     resizeCanvas();
-
+    window.addEventListener('resize', handleResize);
     return () => {
-      ro.disconnect();
+      window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimeout);
     };
   }, []);
@@ -83,25 +78,21 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     [easing]
   );
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animationId: number;
-
-    const draw = (timestamp: number) => {
-      if (!startTimeRef.current) {
-        startTimeRef.current = timestamp;
+  /** Runs only while sparks are alive; parks itself when the array drains. */
+  const drawLoop = useCallback(
+    (timestamp: number) => {
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext('2d');
+      if (!canvas || !ctx) {
+        rafRef.current = null;
+        return;
       }
-      ctx?.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       sparksRef.current = sparksRef.current.filter((spark: Spark) => {
         const elapsed = timestamp - spark.startTime;
-        if (elapsed >= duration) {
-          return false;
-        }
+        if (elapsed >= duration) return false;
 
         const progress = elapsed / duration;
         const eased = easeFunc(progress);
@@ -124,37 +115,44 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
         return true;
       });
 
-      animationId = requestAnimationFrame(draw);
-    };
+      if (sparksRef.current.length > 0) {
+        rafRef.current = requestAnimationFrame(drawLoop);
+      } else {
+        rafRef.current = null;
+      }
+    },
+    [sparkColor, sparkSize, sparkRadius, duration, easeFunc, extraScale]
+  );
 
-    animationId = requestAnimationFrame(draw);
-
+  useEffect(() => {
     return () => {
-      cancelAnimationFrame(animationId);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [sparkColor, sparkSize, sparkRadius, sparkCount, duration, easeFunc, extraScale]);
+  }, []);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>): void => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
     const now = performance.now();
     const newSparks: Spark[] = Array.from({ length: sparkCount }, (_, i) => ({
-      x,
-      y,
+      // viewport coordinates — the canvas is fixed to the viewport
+      x: e.clientX,
+      y: e.clientY,
       angle: (2 * Math.PI * i) / sparkCount,
       startTime: now
     }));
 
     sparksRef.current.push(...newSparks);
+    if (rafRef.current === null) {
+      rafRef.current = requestAnimationFrame(drawLoop);
+    }
   };
 
   return (
     <div className="relative w-full h-full" onClick={handleClick}>
-      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-[125]"
+      />
       {children}
     </div>
   );

@@ -110,7 +110,9 @@ export default function BadgeSection() {
     return () => io.disconnect();
   }, [near]);
 
-  const showLanyard = isWeird && isDesktop && near;
+  // 3D on every viewport now — the Lanyard self-tunes below 768px (lower
+  // DPR, coarser physics timestep); we just pull the camera back a touch.
+  const showLanyard = isWeird && near;
 
   // WebGL contexts can be reclaimed by the browser under GPU pressure; when
   // that happens the canvas freezes empty. Remount the scene (max 3 times).
@@ -159,7 +161,7 @@ export default function BadgeSection() {
           {showLanyard ? (
             <div
               aria-hidden="true"
-              className="badge-lanyard-mount absolute inset-0"
+              className="badge-lanyard-mount absolute inset-0 [touch-action:pan-y]"
             >
               <Lanyard
                 key={glGeneration}
@@ -168,8 +170,8 @@ export default function BadgeSection() {
                 lanyardImage="/assets/lanyard/strap.png"
                 imageFit="cover"
                 transparent
-                position={[0, 0, 13]}
-                fov={24}
+                position={isDesktop ? [0, 0, 13] : [0, 0, 15]}
+                fov={isDesktop ? 24 : 26}
               />
             </div>
           ) : (

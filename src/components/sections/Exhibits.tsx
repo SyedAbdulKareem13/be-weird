@@ -8,8 +8,10 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { motion } from "motion/react";
 import { gsap, ScrollTrigger, SCRAMBLE_CHARS } from "@/lib/gsap";
+import githubStats from "@/data/github-stats.json";
 import WeirdOnly from "@/components/WeirdOnly";
 import SectionHeader from "@/components/SectionHeader";
 import ScrollVelocity from "@/components/reactbits/ScrollVelocity";
@@ -185,6 +187,42 @@ function VelocityHeading({
 /* exhibit cards                                                       */
 /* ------------------------------------------------------------------ */
 
+/** Slug for the dossier route: "MANZIL ONE" → "manzil-one". */
+function exhibitSlug(title: string): string {
+  return title.toLowerCase().replace(/\s+/g, "-");
+}
+
+/** "3 DAYS AGO" from an ISO timestamp — evidence freshness. */
+function relativeTime(iso: string): string {
+  const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
+  if (days <= 0) return "TODAY";
+  if (days === 1) return "YESTERDAY";
+  if (days < 30) return `${days} DAYS AGO`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months} MONTH${months > 1 ? "S" : ""} AGO`;
+  const years = Math.floor(months / 12);
+  return `${years} YEAR${years > 1 ? "S" : ""} AGO`;
+}
+
+function EvidenceLine({ exhibit }: { exhibit: Exhibit }) {
+  const repoName = exhibit.repo.split("/").pop() ?? "";
+  const stat = (githubStats as Record<
+    string,
+    { stars: number; pushedAt: string; language: string | null }
+  >)[repoName];
+  if (!stat) return null;
+  return (
+    <p
+      suppressHydrationWarning
+      className={`${MONO} mt-1.5 text-[0.625rem] uppercase tracking-[0.12em] opacity-60`}
+    >
+      LAST OBSERVED: {relativeTime(stat.pushedAt)}
+      {stat.language ? ` · ${stat.language}` : ""}
+      {stat.stars > 0 ? ` · ★ ${stat.stars}` : ""}
+    </p>
+  );
+}
+
 /** Card anatomy shared by boring and weird variants. */
 function ExhibitBody({ exhibit }: { exhibit: Exhibit }) {
   return (
@@ -195,6 +233,7 @@ function ExhibitBody({ exhibit }: { exhibit: Exhibit }) {
           CLASS: {exhibit.clazz} · STATUS: {exhibit.status}
         </span>
       </div>
+      <EvidenceLine exhibit={exhibit} />
       <h3
         className={`${DISPLAY} mt-4 text-2xl font-bold uppercase leading-[1.05] tracking-[-0.02em] md:text-3xl xl:text-4xl`}
       >
@@ -214,6 +253,13 @@ function ExhibitBody({ exhibit }: { exhibit: Exhibit }) {
         ))}
       </ul>
       <div className="mt-6 flex flex-wrap items-center gap-4">
+        <Link
+          href={`/exhibits/${exhibitSlug(exhibit.title)}`}
+          data-cursor="INSPECT"
+          className={`${MONO} text-xs font-bold tracking-[0.16em] text-hazard underline underline-offset-4`}
+        >
+          OPEN DOSSIER →
+        </Link>
         {exhibit.live ? (
           <a
             href={exhibit.live}

@@ -1,4 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { identity } from "@/data/content";
 import {
   Bricolage_Grotesque,
   Archivo,
@@ -8,6 +11,11 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import ArchiveChrome from "@/components/ArchiveChrome";
+import Preloader from "@/components/Preloader";
+import CustomCursor from "@/components/CustomCursor";
+import CommandPalette from "@/components/CommandPalette";
+import KonamiWatcher from "@/components/KonamiWatcher";
+import Nav from "@/components/Nav";
 
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
@@ -70,6 +78,26 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0E0C15",
+  width: "device-width",
+  initialScale: 1,
+};
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Syed Abdul Kareem",
+  jobTitle: "Forward Deployed Engineer",
+  worksFor: {
+    "@type": "Organization",
+    name: "KEBS (Kaar Enterprise Business Suites)",
+  },
+  email: `mailto:${identity.email}`,
+  url: "https://be-weird-syed.vercel.app",
+  sameAs: [identity.github, identity.linkedin],
+};
+
 /**
  * Runs before hydration: resolves mode from localStorage, falling back to
  * prefers-reduced-motion (reduce → boring). Prevents a flash of wrong mode.
@@ -102,12 +130,25 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: modeScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+        />
       </head>
       <body>
         <a href="#specimen" className="skip-link">
           SKIP TO CONTENT
         </a>
-        <ArchiveChrome>{children}</ArchiveChrome>
+        <ArchiveChrome>
+          <Preloader />
+          <CustomCursor />
+          <CommandPalette />
+          <KonamiWatcher />
+          <Nav />
+          {children}
+        </ArchiveChrome>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

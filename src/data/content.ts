@@ -30,6 +30,15 @@ export const heroLabels = {
 
 export const tickerPhrases = ["BE WEIRD", "SHIP THINGS", "STAY CURIOUS"];
 
+export const rotatingRoles = [
+  "FORWARD DEPLOYED ENGINEER",
+  "ANGULAR ALCHEMIST",
+  "GEN-AI TINKERER",
+  "PIXEL WRANGLER",
+  "SAAS ARCHITECT",
+  "PROFESSIONAL WEIRDO",
+];
+
 export const fieldNotes = {
   stamp: "OBSERVATION LOG",
   headline: "MOSTLY HARMLESS. OCCASIONALLY BRILLIANT.",

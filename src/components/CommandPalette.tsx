@@ -10,8 +10,10 @@ import { Command } from "cmdk";
 import { animate, utils } from "animejs";
 import { useModeStore } from "@/lib/mode-store";
 import { toast } from "@/lib/toast";
+import { play } from "@/lib/sound";
 import { identity } from "@/data/content";
 import LetterGlitch from "@/components/reactbits/LetterGlitch";
+import Interrogate from "@/components/Interrogate";
 
 const SECTIONS: { id: string; label: string }[] = [
   { id: "specimen", label: "01 SPECIMEN" },
@@ -26,13 +28,17 @@ const SECTIONS: { id: string; label: string }[] = [
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [destructing, setDestructing] = useState(false);
+  const [interrogating, setInterrogating] = useState(false);
   const { mode, toggleMode } = useModeStore();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setOpen((o) => !o);
+        setOpen((o) => {
+          if (!o) play("boot");
+          return !o;
+        });
       }
     };
     window.addEventListener("keydown", onKey);
@@ -169,6 +175,16 @@ export default function CommandPalette() {
               DO A BARREL ROLL
             </Command.Item>
             <Command.Item
+              onSelect={() => {
+                setOpen(false);
+                play("boot");
+                setInterrogating(true);
+              }}
+              className="cursor-pointer px-3 py-2 text-xs tracking-[0.2em] uppercase data-[selected=true]:bg-hazard data-[selected=true]:text-ink"
+            >
+              INTERROGATE THE SPECIMEN
+            </Command.Item>
+            <Command.Item
               onSelect={selfDestruct}
               className="cursor-pointer px-3 py-2 text-xs tracking-[0.2em] uppercase data-[selected=true]:bg-hazard data-[selected=true]:text-ink"
             >
@@ -191,6 +207,11 @@ export default function CommandPalette() {
           onClick={() => setOpen(false)}
         />
       )}
+
+      <Interrogate
+        open={interrogating}
+        onClose={() => setInterrogating(false)}
+      />
 
       {destructing && (
         <div className="fixed inset-0 z-[145]" aria-hidden="true">

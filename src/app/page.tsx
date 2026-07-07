@@ -1,8 +1,3 @@
-import Preloader from "@/components/Preloader";
-import CustomCursor from "@/components/CustomCursor";
-import CommandPalette from "@/components/CommandPalette";
-import KonamiWatcher from "@/components/KonamiWatcher";
-import Nav from "@/components/Nav";
 import CautionTape from "@/components/CautionTape";
 import BoringResume from "@/components/BoringResume";
 import Specimen from "@/components/sections/Specimen";
@@ -17,11 +12,6 @@ import ArchiveFooter from "@/components/sections/ArchiveFooter";
 export default function Home() {
   return (
     <>
-      <Preloader />
-      <CustomCursor />
-      <CommandPalette />
-      <KonamiWatcher />
-      <Nav />
       <main id="main">
         {/* THE ARCHIVE — weird mode */}
         <div data-weird-page>

@@ -274,3 +274,49 @@ html[data-mode="boring"] .text-stroke {
     scroll-behavior: auto;
   }
 }
+
+/* ============================================================
+   PRINT — Ctrl+P always yields the clean CV, regardless of mode
+   ============================================================ */
+
+@page {
+  margin: 14mm;
+}
+
+@media print {
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  header,
+  nav,
+  [data-weird-page],
+  .skip-link,
+  .grain::after,
+  [data-print-hidden] {
+    display: none !important;
+  }
+
+  [data-boring-page] {
+    display: block !important;
+    padding-top: 0 !important;
+    color: #111111 !important;
+  }
+
+  [data-boring-page] a {
+    color: #1f4fd8 !important;
+    text-decoration: none;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  [data-boring-page] article {
+    break-inside: avoid;
+  }
+
+  [data-boring-page] section {
+    margin-top: 2rem !important;
+  }
+}

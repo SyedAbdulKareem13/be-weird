@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import { gsap, SCRAMBLE_CHARS } from "@/lib/gsap";
 import { useIsWeird } from "@/lib/mode-store";
 import { identity } from "@/data/content";
 import BoringLever from "@/components/BoringLever";
+import SoundToggle from "@/components/SoundToggle";
+import FileReadProgress from "@/components/FileReadProgress";
 
 /**
  * Archive chrome: fixed top bar with logo mark, section index, IST clock and
@@ -31,6 +34,9 @@ const NAV_SECTIONS: NavSection[] = [
 export default function Nav(): React.JSX.Element {
   const isWeird = useIsWeird();
   const [menuOpen, setMenuOpen] = useState(false);
+  // on sub-routes (case files) anchor links must route home first
+  const pathname = usePathname();
+  const anchorPrefix = pathname === "/" ? "" : "/";
 
   const listRef = useRef<HTMLUListElement | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -104,7 +110,7 @@ export default function Nav(): React.JSX.Element {
         <div className="flex items-center justify-between gap-4 px-6 py-4 font-[family-name:var(--font-space-mono)]">
           {/* logo mark */}
           <a
-            href="#specimen"
+            href={`${anchorPrefix}#specimen`}
             data-cursor="INSPECT"
             aria-label={`${identity.logoMark} — back to top`}
             className="text-sm font-bold tracking-[0.1em] transition-colors hover:text-hazard"
@@ -124,7 +130,7 @@ export default function Nav(): React.JSX.Element {
               {NAV_SECTIONS.map((s) => (
                 <li key={s.id}>
                   <a
-                    href={`#${s.id}`}
+                    href={`${anchorPrefix}#${s.id}`}
                     data-cursor="INSPECT"
                     onMouseEnter={scramble}
                     onFocus={scramble}
@@ -142,14 +148,18 @@ export default function Nav(): React.JSX.Element {
             </ul>
           </nav>
 
-          {/* clock + lever + menu */}
+          {/* progress + sound + clock + lever + menu */}
           <div className="flex items-center gap-4">
+            <span className="hidden xl:block">
+              <FileReadProgress />
+            </span>
             <span
               suppressHydrationWarning
               className="hidden whitespace-nowrap text-[11px] tracking-[0.14em] opacity-70 xl:block"
             >
               {time} IST
             </span>
+            <SoundToggle />
 
             <div className="origin-right scale-[0.8] md:scale-100">
               <BoringLever />
@@ -205,7 +215,7 @@ export default function Nav(): React.JSX.Element {
                   <li key={s.id}>
                     <a
                       ref={i === 0 ? firstLinkRef : undefined}
-                      href={`#${s.id}`}
+                      href={`${anchorPrefix}#${s.id}`}
                       data-cursor="INSPECT"
                       onClick={() => setMenuOpen(false)}
                       className="group flex items-baseline gap-4 border-b border-line py-4"
