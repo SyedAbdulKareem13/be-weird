@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "be-weird-dev",
+      "runtimeExecutable": "C:\\Users\\ksyedabdul\\Node20\\node-v20.20.2-win-x64\\npm.cmd",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "C:\\Users\\ksyedabdul\\dev\\be-weird-portfolio",
+      "port": 3000
+    }
+  ]
+}

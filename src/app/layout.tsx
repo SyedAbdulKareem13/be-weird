@@ -6,6 +6,7 @@ import {
   Roboto_Flex,
 } from "next/font/google";
 import "./globals.css";
+import ArchiveChrome from "@/components/ArchiveChrome";
 
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
@@ -98,7 +99,7 @@ export default function RootLayout({
         <a href="#specimen" className="skip-link">
           SKIP TO CONTENT
         </a>
-        {children}
+        <ArchiveChrome>{children}</ArchiveChrome>
       </body>
     </html>
   );
