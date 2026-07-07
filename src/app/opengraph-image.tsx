@@ -125,7 +125,7 @@ export default function Image() {
               marginTop: 28,
             }}
           >
-            FULL STACK DEVELOPER · ARCHIVE №13
+            FORWARD DEPLOYED ENGINEER · ARCHIVE №13
           </div>
 
           {/* Barcode bottom-left */}

@@ -4,6 +4,7 @@ import {
   Archivo,
   Space_Mono,
   Roboto_Flex,
+  Source_Serif_4,
 } from "next/font/google";
 import "./globals.css";
 import ArchiveChrome from "@/components/ArchiveChrome";
@@ -36,9 +37,16 @@ const spaceMono = Space_Mono({
   weight: ["400", "700"],
 });
 
+// BORING mode masthead + headings — the consulting-document voice.
+const sourceSerif = Source_Serif_4({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  axes: ["opsz"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://be-weird-syed.vercel.app"),
-  title: "Syed Abdul Kareem — Full Stack Developer · BE WEIRD",
+  title: "Syed Abdul Kareem — Forward Deployed Engineer · BE WEIRD",
   description:
     "The specimen archive of one (1) weird developer. Enterprise CRM platforms by day, weird internet things by night. Angular · React · Next.js · Node.js · GenAI.",
   keywords: [
@@ -89,7 +97,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-mode="weird"
-      className={`${bricolage.variable} ${archivo.variable} ${spaceMono.variable} ${robotoFlex.variable} antialiased`}
+      className={`${bricolage.variable} ${archivo.variable} ${spaceMono.variable} ${robotoFlex.variable} ${sourceSerif.variable} antialiased`}
       suppressHydrationWarning
     >
       <head>

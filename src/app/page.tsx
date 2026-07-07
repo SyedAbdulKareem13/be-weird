@@ -4,6 +4,7 @@ import CommandPalette from "@/components/CommandPalette";
 import KonamiWatcher from "@/components/KonamiWatcher";
 import Nav from "@/components/Nav";
 import CautionTape from "@/components/CautionTape";
+import BoringResume from "@/components/BoringResume";
 import Specimen from "@/components/sections/Specimen";
 import FieldNotes from "@/components/sections/FieldNotes";
 import Instruments from "@/components/sections/Instruments";
@@ -22,17 +23,24 @@ export default function Home() {
       <KonamiWatcher />
       <Nav />
       <main id="main">
-        <Specimen />
-        <FieldNotes />
-        <CautionTape />
-        <Instruments />
-        <Exhibits />
-        <Incidents />
-        <CautionTape text="⚠ RESTRICTED AREA ⚠ PHYSICS AHEAD ⚠ YANK RESPONSIBLY" />
-        <BadgeSection />
-        <ContactLab />
+        {/* THE ARCHIVE — weird mode */}
+        <div data-weird-page>
+          <Specimen />
+          <FieldNotes />
+          <CautionTape />
+          <Instruments />
+          <Exhibits />
+          <Incidents />
+          <CautionTape text="⚠ RESTRICTED AREA ⚠ PHYSICS AHEAD ⚠ YANK RESPONSIBLY" />
+          <BadgeSection />
+          <ContactLab />
+        </div>
+        {/* THE DOCUMENT — boring mode (CSS gates which tree is visible) */}
+        <BoringResume />
       </main>
-      <ArchiveFooter />
+      <div data-weird-page>
+        <ArchiveFooter />
+      </div>
     </>
   );
 }

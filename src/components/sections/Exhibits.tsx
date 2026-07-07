@@ -213,7 +213,18 @@ function ExhibitBody({ exhibit }: { exhibit: Exhibit }) {
           </li>
         ))}
       </ul>
-      <div className="mt-6">
+      <div className="mt-6 flex flex-wrap items-center gap-4">
+        {exhibit.live ? (
+          <a
+            href={exhibit.live}
+            target="_blank"
+            rel="noreferrer"
+            data-cursor="INSPECT"
+            className={`${MONO} inline-block border border-hazard bg-hazard px-4 py-2 text-xs font-bold tracking-[0.16em] text-ink transition-colors hover:bg-transparent hover:text-hazard`}
+          >
+            OPEN LIVE ↗
+          </a>
+        ) : null}
         <a
           href={exhibit.repo}
           target="_blank"

@@ -114,8 +114,12 @@ export default function Nav(): React.JSX.Element {
             {logoRight}
           </a>
 
-          {/* section index — desktop */}
-          <nav aria-label="Archive sections" className="hidden lg:block">
+          {/* section index — desktop; archive-only, hidden in boring mode */}
+          <nav
+            aria-label="Archive sections"
+            data-weird-nav
+            className="hidden lg:block"
+          >
             <ul ref={listRef} className="flex items-center gap-5 xl:gap-6">
               {NAV_SECTIONS.map((s) => (
                 <li key={s.id}>
@@ -155,6 +159,7 @@ export default function Nav(): React.JSX.Element {
               ref={menuButtonRef}
               type="button"
               data-cursor="INSPECT"
+              data-weird-nav
               aria-expanded={menuOpen}
               aria-controls="archive-menu"
               onClick={() => setMenuOpen((open) => !open)}

@@ -44,7 +44,7 @@ const front = `<svg xmlns="http://www.w3.org/2000/svg" width="710" height="1000"
   <text x="60" y="200" font-family="${MONO}" font-size="22" letter-spacing="4" fill="${BONE}" opacity="0.65">SUBJECT</text>
   <text x="60" y="278" font-family="Arial Black, Arial, sans-serif" font-size="58" font-weight="900" fill="${BONE}">SYED ABDUL</text>
   <text x="60" y="348" font-family="Arial Black, Arial, sans-serif" font-size="58" font-weight="900" fill="${BONE}">KAREEM</text>
-  <text x="60" y="420" font-family="${MONO}" font-size="26" letter-spacing="3" fill="${HAZARD}">FULL STACK DEVELOPER</text>
+  <text x="60" y="420" font-family="${MONO}" font-size="24" letter-spacing="2" fill="${HAZARD}">FORWARD DEPLOYED ENGINEER</text>
   <text x="60" y="480" font-family="${MONO}" font-size="24" letter-spacing="3" fill="${BONE}" opacity="0.8">ARCHIVE №13</text>
   <g transform="translate(60, 530)">
     <rect x="-12" y="-12" width="264" height="264" fill="${BONE}"/>

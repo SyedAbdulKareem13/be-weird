@@ -100,6 +100,21 @@ html[data-mode="boring"] ::selection {
   }
 }
 
+/* ---------- mode gating: two page trees, CSS decides pre-hydration ---------- */
+
+html[data-mode="boring"] [data-weird-page] {
+  display: none;
+}
+
+html[data-mode="weird"] [data-boring-page] {
+  display: none;
+}
+
+/* nav decorations that only make sense in the archive */
+html[data-mode="boring"] [data-weird-nav] {
+  display: none;
+}
+
 html.lenis,
 html.lenis body {
   height: auto;
