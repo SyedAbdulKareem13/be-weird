@@ -114,8 +114,11 @@ export default function Interrogate({
   const [lines, setLines] = useState<Line[]>([]);
   const [busy, setBusy] = useState(false);
   const [input, setInput] = useState("");
+  // ↑↓ moves this highlight through the suggested questions, ↵ asks it
+  const [highlight, setHighlight] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const chipsRef = useRef<HTMLDivElement>(null);
   const typingTimer = useRef<number | null>(null);
 
   useEffect(() => {
@@ -123,6 +126,7 @@ export default function Interrogate({
       setLines([]);
       setInput("");
       setBusy(false);
+      setHighlight(-1);
       window.setTimeout(() => inputRef.current?.focus(), 60);
     }
     return () => {
@@ -130,12 +134,40 @@ export default function Interrogate({
     };
   }, [open]);
 
+  // keep the highlighted question in view inside the chip strip
+  useEffect(() => {
+    if (highlight < 0) return;
+    chipsRef.current
+      ?.querySelectorAll("button")
+      [highlight]?.scrollIntoView({ block: "nearest" });
+  }, [highlight]);
+
   // The session renders inside the ARCHIVE TERMINAL's dialog. Keys typed
   // here must never drive the cmdk list underneath — contain everything and
-  // handle Escape locally (closes the session, leaves the terminal open).
+  // handle Escape / arrow navigation locally.
   const containKeys = (e: React.KeyboardEvent) => {
     e.stopPropagation();
-    if (e.key === "Escape") onClose();
+    if (e.key === "Escape") {
+      onClose();
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlight((h) => (h + 1) % TRANSCRIPT.length);
+      return;
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlight((h) => (h <= 0 ? TRANSCRIPT.length - 1 : h - 1));
+      return;
+    }
+    // Enter with an empty input asks the highlighted question; with text it
+    // falls through to the form submit (free-text matcher)
+    if (e.key === "Enter" && !input.trim() && highlight >= 0 && !busy) {
+      e.preventDefault();
+      const qa = TRANSCRIPT[highlight];
+      ask(qa.q, qa.a);
+    }
   };
 
   const scrollToEnd = () => {
@@ -243,7 +275,8 @@ export default function Interrogate({
         {/* transcript */}
         <div
           ref={scrollRef}
-          className="max-h-[46vh] min-h-[120px] space-y-3 overflow-y-auto px-4 py-4 text-xs leading-relaxed"
+          data-lenis-prevent
+          className="max-h-[38vh] min-h-[120px] space-y-3 overflow-y-auto overscroll-contain px-4 py-4 text-xs leading-relaxed"
         >
           {lines.length === 0 ? (
             <p className="opacity-50">
@@ -268,16 +301,25 @@ export default function Interrogate({
           ))}
         </div>
 
-        {/* suggested questions */}
-        <div className="flex max-h-[22vh] flex-wrap gap-2 overflow-y-auto border-t border-line px-4 py-3">
-          {TRANSCRIPT.map((qa) => (
+        {/* suggested questions — ↑↓ highlights, ↵ asks */}
+        <div
+          ref={chipsRef}
+          data-lenis-prevent
+          className="flex max-h-[22vh] flex-wrap gap-2 overflow-y-auto overscroll-contain border-t border-line px-4 py-3"
+        >
+          {TRANSCRIPT.map((qa, index) => (
             <button
               key={qa.q}
               type="button"
               disabled={busy}
               data-cursor="INSPECT"
               onClick={() => ask(qa.q, qa.a)}
-              className="border border-line px-2.5 py-1 text-[10px] tracking-[0.08em] uppercase opacity-80 transition-colors hover:border-hazard hover:text-hazard disabled:opacity-40"
+              onMouseEnter={() => setHighlight(index)}
+              className={`border px-2.5 py-1 text-[10px] tracking-[0.08em] uppercase transition-colors disabled:opacity-40 ${
+                index === highlight
+                  ? "border-hazard bg-hazard font-bold text-ink"
+                  : "border-line opacity-80 hover:border-hazard hover:text-hazard"
+              }`}
             >
               {qa.q}
             </button>
@@ -301,6 +343,13 @@ export default function Interrogate({
             className="w-full bg-transparent text-xs tracking-wider uppercase outline-none placeholder:opacity-40"
           />
         </form>
+
+        {/* explicit keyboard affordances */}
+        <div className="flex items-center gap-4 border-t border-line px-4 py-2 text-[10px] tracking-[0.18em] uppercase opacity-50">
+          <span>↑↓ QUESTIONS</span>
+          <span>↵ ASK</span>
+          <span>ESC EXIT</span>
+        </div>
       </div>
     </div>
   );

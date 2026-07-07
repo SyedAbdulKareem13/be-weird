@@ -37,6 +37,9 @@ export default function CommandPalette() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // the terminal is archive equipment — boring mode has no easter eggs
+      if (document.documentElement.getAttribute("data-mode") === "boring")
+        return;
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setOpen((o) => {
@@ -57,6 +60,14 @@ export default function CommandPalette() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // pulling the lever while the terminal is up closes everything
+  useEffect(() => {
+    if (mode === "boring") {
+      setOpen(false);
+      setInterrogating(false);
+    }
+  }, [mode]);
 
   // Guaranteed keyboard control: focus the query input whenever the terminal
   // is topmost (on open, and again when an interrogation session ends).
@@ -173,7 +184,10 @@ export default function CommandPalette() {
           placeholder="> QUERY THE ARCHIVE…"
           className="w-full border-b border-line bg-transparent px-4 py-3 text-sm tracking-wider uppercase outline-none placeholder:opacity-40"
         />
-        <Command.List className="max-h-[320px] overflow-y-auto p-2">
+        <Command.List
+          data-lenis-prevent
+          className="max-h-[320px] overflow-y-auto p-2"
+        >
           <Command.Empty className="px-3 py-6 text-center text-xs tracking-widest opacity-50">
             NO SUCH FILE IN THE ARCHIVE.
           </Command.Empty>
