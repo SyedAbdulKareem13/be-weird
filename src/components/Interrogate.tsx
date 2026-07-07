@@ -130,14 +130,13 @@ export default function Interrogate({
     };
   }, [open]);
 
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
+  // The session renders inside the ARCHIVE TERMINAL's dialog. Keys typed
+  // here must never drive the cmdk list underneath — contain everything and
+  // handle Escape locally (closes the session, leaves the terminal open).
+  const containKeys = (e: React.KeyboardEvent) => {
+    e.stopPropagation();
+    if (e.key === "Escape") onClose();
+  };
 
   const scrollToEnd = () => {
     window.requestAnimationFrame(() => {
@@ -208,7 +207,7 @@ export default function Interrogate({
   if (!open) return null;
 
   return (
-    <>
+    <div onKeyDown={containKeys}>
       <button
         aria-label="Close interrogation"
         className="fixed inset-0 z-[141] bg-ink/70 backdrop-blur-[2px]"
@@ -303,6 +302,6 @@ export default function Interrogate({
           />
         </form>
       </div>
-    </>
+    </div>
   );
 }

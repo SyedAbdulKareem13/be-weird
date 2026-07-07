@@ -127,7 +127,7 @@ export default function CustomCursor(): ReactElement | null {
       {/* Trailing ring + crosshair + label chip */}
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none fixed z-[130]"
+        className="pointer-events-none fixed z-[220]"
         style={{
           x: ringX,
           y: ringY,
@@ -199,7 +199,7 @@ export default function CustomCursor(): ReactElement | null {
       {/* Dot — 1:1 tracker, rendered after the ring so it sits on top */}
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none fixed z-[130] rounded-full bg-hazard"
+        className="pointer-events-none fixed z-[220] rounded-full bg-hazard"
         style={{
           x,
           y,

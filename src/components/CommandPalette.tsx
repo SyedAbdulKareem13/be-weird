@@ -5,7 +5,7 @@
  * mode, yank the lanyard, barrel roll, self destruct, copy email).
  */
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Command } from "cmdk";
 import { animate, utils } from "animejs";
 import { useModeStore } from "@/lib/mode-store";
@@ -30,6 +30,10 @@ export default function CommandPalette() {
   const [destructing, setDestructing] = useState(false);
   const [interrogating, setInterrogating] = useState(false);
   const { mode, toggleMode } = useModeStore();
+  const inputRef = useRef<HTMLInputElement>(null);
+  // read inside same-tick event handlers (Radix Escape vs our Escape)
+  const interrogatingRef = useRef(false);
+  interrogatingRef.current = interrogating;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -41,17 +45,48 @@ export default function CommandPalette() {
         });
       }
       // Ctrl+Shift+I — you tried to inspect the specimen; the specimen
-      // inspects you instead. (F12 still opens the real DevTools.)
+      // inspects you instead. Opens the terminal with an interrogation
+      // session on top. (F12 still opens the real DevTools.)
       if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
         e.preventDefault();
-        setOpen(false);
         play("boot");
+        setOpen(true);
         setInterrogating(true);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // Guaranteed keyboard control: focus the query input whenever the terminal
+  // is topmost (on open, and again when an interrogation session ends).
+  // Several attempts — Radix's own focus restoration runs async and can
+  // land focus on <body> after the session subtree unmounts.
+  useEffect(() => {
+    if (!open || interrogating) return;
+    const focusInput = () => {
+      const input = inputRef.current;
+      if (input && document.activeElement !== input) input.focus();
+    };
+    const raf = window.requestAnimationFrame(focusInput);
+    const t1 = window.setTimeout(focusInput, 80);
+    const t2 = window.setTimeout(focusInput, 220);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [open, interrogating]);
+
+  // Arrows must scroll the terminal, never the page behind it.
+  useEffect(() => {
+    if (!open && !interrogating) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open, interrogating]);
 
   const jump = useCallback((id: string) => {
     setOpen(false);
@@ -113,7 +148,13 @@ export default function CommandPalette() {
     <>
       <Command.Dialog
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={(next) => {
+          // while an interrogation session is on top, Escape/outside-click
+          // must close the session (handled in Interrogate), not the terminal
+          if (!next && interrogatingRef.current) return;
+          setOpen(next);
+        }}
+        loop
         label="Archive terminal"
         className="fixed top-[18vh] left-1/2 z-[140] w-[min(560px,92vw)] -translate-x-1/2 border border-line-strong bg-specimen font-[family-name:var(--font-space-mono)] text-bone shadow-2xl"
       >
@@ -128,6 +169,7 @@ export default function CommandPalette() {
           />
         </div>
         <Command.Input
+          ref={inputRef}
           placeholder="> QUERY THE ARCHIVE…"
           className="w-full border-b border-line bg-transparent px-4 py-3 text-sm tracking-wider uppercase outline-none placeholder:opacity-40"
         />
@@ -184,7 +226,8 @@ export default function CommandPalette() {
             </Command.Item>
             <Command.Item
               onSelect={() => {
-                setOpen(false);
+                // terminal stays open underneath — closing the session
+                // drops the researcher back into the terminal
                 play("boot");
                 setInterrogating(true);
               }}
@@ -206,6 +249,19 @@ export default function CommandPalette() {
             </Command.Item>
           </Command.Group>
         </Command.List>
+
+        {/* explicit keyboard affordances */}
+        <div className="flex items-center gap-4 border-t border-line px-4 py-2 text-[10px] tracking-[0.18em] uppercase opacity-50">
+          <span>↑↓ NAVIGATE</span>
+          <span>↵ EXECUTE</span>
+          <span>ESC EXIT</span>
+        </div>
+
+        {/* rendered inside the dialog so it lives within the focus trap */}
+        <Interrogate
+          open={interrogating}
+          onClose={() => setInterrogating(false)}
+        />
       </Command.Dialog>
 
       {open && (
@@ -215,11 +271,6 @@ export default function CommandPalette() {
           onClick={() => setOpen(false)}
         />
       )}
-
-      <Interrogate
-        open={interrogating}
-        onClose={() => setInterrogating(false)}
-      />
 
       {destructing && (
         <div className="fixed inset-0 z-[145]" aria-hidden="true">
