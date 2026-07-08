@@ -11,6 +11,8 @@ type ModeState = {
   setMode: (mode: ArchiveMode) => void;
   toggleMode: () => void;
   setKonami: (on: boolean) => void;
+  /** Re-read the pre-hydration verdict from the DOM and correct state. */
+  syncFromDom: () => void;
 };
 
 /**
@@ -54,6 +56,15 @@ export const useModeStore = create<ModeState>()((set, get) => ({
     set({ mode: next, autoCalmed: false });
   },
   setKonami: (on) => set({ konami: on }),
+  // SSR always renders "weird" (no document); a reduced-motion client may
+  // have resolved "boring" pre-hydration. Called once on mount to snap the
+  // store to the real DOM verdict so DOM and React state can never disagree.
+  syncFromDom: () => {
+    const domMode = initialMode();
+    if (get().mode !== domMode) {
+      set({ mode: domMode, autoCalmed: wasAutoCalmed() });
+    }
+  },
 }));
 
 /** Convenience hook: true when full weirdness is allowed. */

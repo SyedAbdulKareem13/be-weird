@@ -114,6 +114,15 @@ export default function CustomCursor(): ReactElement | null {
     };
   }, [isWeird, finePointer, x, y, ringX, ringY]);
 
+  // Own the native-cursor-hiding: only while this component is truly active.
+  // If it ever stops rendering, the class comes off and the OS cursor returns.
+  useEffect(() => {
+    const active = isWeird && finePointer;
+    const root = document.documentElement;
+    root.classList.toggle("cursor-hidden", active);
+    return () => root.classList.remove("cursor-hidden");
+  }, [isWeird, finePointer]);
+
   if (!isWeird || !finePointer) return null;
 
   const ringState: RingState = label

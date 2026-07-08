@@ -121,6 +121,13 @@ export default function ArchiveChrome({
 }): React.ReactElement {
   const isWeird = useIsWeird();
   const autoCalmed = useModeStore((s) => s.autoCalmed);
+  const syncFromDom = useModeStore((s) => s.syncFromDom);
+
+  /* Reconcile the store with the pre-hydration DOM verdict on mount, so a
+     reduced-motion client (SSR assumes weird) can't strand a stale mode. */
+  useEffect(() => {
+    syncFromDom();
+  }, [syncFromDom]);
 
   /* Lenis smooth scroll — weird mode only, wired into GSAP's ticker so
      ScrollTrigger scenes and the scroll position never disagree. */
@@ -233,7 +240,7 @@ export default function ArchiveChrome({
           aria-hidden="true"
           className="pointer-events-none fixed inset-0 z-[100]"
         >
-          <Noise patternAlpha={13} patternRefreshInterval={4} />
+          <Noise patternAlpha={13} patternRefreshInterval={6} />
         </div>
       </WeirdOnly>
 

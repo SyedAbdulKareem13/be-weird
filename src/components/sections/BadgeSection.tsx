@@ -92,23 +92,26 @@ export default function BadgeSection() {
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  // mount the heavy chunk only once the section is within ~1.5 viewports
+  // Mount the heavy chunk once the section is within ~1 viewport, and track
+  // live visibility so we can PAUSE the render loop when scrolled away (the
+  // 3D physics runs continuously otherwise, burning CPU/GPU across the whole
+  // page). Keep it mounted once loaded — re-initialising rapier is costlier
+  // than a paused canvas.
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
-    if (near) return;
     const el = sectionRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setNear(true);
-          io.disconnect();
-        }
+        const near = entries.some((entry) => entry.isIntersecting);
+        setVisible(near);
+        if (near) setNear(true);
       },
-      { rootMargin: "150% 0px" }
+      { rootMargin: "60% 0px" }
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [near]);
+  }, []);
 
   // 3D on every viewport now — the Lanyard self-tunes below 768px (lower
   // DPR, coarser physics timestep); we just pull the camera back a touch.
@@ -165,6 +168,7 @@ export default function BadgeSection() {
             >
               <Lanyard
                 key={glGeneration}
+                active={visible}
                 frontImage="/assets/lanyard/badge-front.png"
                 backImage="/assets/lanyard/badge-back.png"
                 lanyardImage="/assets/lanyard/strap.png"

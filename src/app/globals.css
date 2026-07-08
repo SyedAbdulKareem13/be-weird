@@ -91,11 +91,14 @@ html[data-mode="boring"] ::selection {
   scrollbar-color: var(--hazard) var(--ink);
 }
 
-/* hide native cursor only in weird mode on fine pointers */
+/* Hide the native cursor ONLY when the custom cursor is actually mounted and
+   running. CustomCursor adds html.cursor-hidden when it renders and removes it
+   on cleanup — so any failure (desync, error, slow mount) leaves the native
+   cursor visible instead of hiding it with nothing to replace it. */
 @media (pointer: fine) {
-  html[data-mode="weird"] body,
-  html[data-mode="weird"] a,
-  html[data-mode="weird"] button {
+  html.cursor-hidden body,
+  html.cursor-hidden a,
+  html.cursor-hidden button {
     cursor: none;
   }
 }

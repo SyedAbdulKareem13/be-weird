@@ -35,7 +35,7 @@ type Particle = {
   fill: string;
 };
 
-const MAX_PARTICLES_DESKTOP = 4200;
+const MAX_PARTICLES_DESKTOP = 2800;
 const MAX_PARTICLES_MOBILE = 1200;
 const REPEL_RADIUS = 90;
 const REPEL_RADIUS_SQ = REPEL_RADIUS * REPEL_RADIUS;
