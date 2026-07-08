@@ -9,6 +9,7 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap, SCRAMBLE_CHARS } from "@/lib/gsap";
 import { useIsWeird } from "@/lib/mode-store";
+import { usePerfTier } from "@/lib/perf";
 import {
   identity,
   heroLabels,
@@ -78,6 +79,7 @@ function ISTClock() {
 
 export default function Specimen() {
   const isWeird = useIsWeird();
+  const perfTier = usePerfTier();
   const sublineRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
 
@@ -134,10 +136,18 @@ export default function Specimen() {
 
       {/* everything below lives in flow — no layer can overlap another */}
       <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col justify-center">
-        {/* particle BE WEIRD, its own band above the name */}
+        {/* particle BE WEIRD, its own band above the name.
+            Low-end devices get a static outlined title instead of the
+            2,800-particle canvas — same words, zero per-frame cost. */}
         <WeirdOnly>
           <div className="pointer-events-none h-[20vh] min-h-[140px] w-full">
-            <ParticleTypography text="BE WEIRD" className="h-full w-full" />
+            {perfTier === "high" ? (
+              <ParticleTypography text="BE WEIRD" className="h-full w-full" />
+            ) : (
+              <p className="text-stroke flex h-full items-center justify-center font-[family-name:var(--font-bricolage)] text-[12vw] leading-none font-bold uppercase">
+                BE WEIRD
+              </p>
+            )}
           </div>
         </WeirdOnly>
 

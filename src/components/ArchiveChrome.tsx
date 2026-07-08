@@ -15,7 +15,7 @@ import { play } from "@/lib/sound";
 import { calmToast } from "@/data/content";
 import WeirdOnly from "@/components/WeirdOnly";
 import ClickSpark from "@/components/reactbits/ClickSpark";
-import Noise from "@/components/reactbits/Noise";
+import { usePerfTier } from "@/lib/perf";
 
 /* ------------------------------------------------------------------ */
 /* Console easter egg — module-level guard so StrictMode / remounts    */
@@ -122,6 +122,7 @@ export default function ArchiveChrome({
   const isWeird = useIsWeird();
   const autoCalmed = useModeStore((s) => s.autoCalmed);
   const syncFromDom = useModeStore((s) => s.syncFromDom);
+  const perfTier = usePerfTier();
 
   /* Reconcile the store with the pre-hydration DOM verdict on mount, so a
      reduced-motion client (SSR assumes weird) can't strand a stale mode. */
@@ -129,10 +130,11 @@ export default function ArchiveChrome({
     syncFromDom();
   }, [syncFromDom]);
 
-  /* Lenis smooth scroll — weird mode only, wired into GSAP's ticker so
-     ScrollTrigger scenes and the scroll position never disagree. */
+  /* Lenis smooth scroll — weird mode + capable devices only. On weak hardware
+     native scroll is smoother than JS-driven smooth scroll, so we skip it and
+     ScrollTrigger falls back to the native scroller. */
   useEffect(() => {
-    if (!isWeird) return;
+    if (!isWeird || perfTier === "low") return;
 
     const lenis = new Lenis({ autoRaf: false });
 
@@ -192,7 +194,7 @@ export default function ArchiveChrome({
       lenis.destroy();
       ScrollTrigger.refresh();
     };
-  }, [isWeird]);
+  }, [isWeird, perfTier]);
 
   /* Console easter egg — once per page load. */
   useEffect(() => {
@@ -235,13 +237,10 @@ export default function ArchiveChrome({
         </ClickSpark>
       </WeirdOnly>
 
+      {/* Film grain — a GPU-composited CSS overlay instead of a per-frame
+          1024×1024 canvas. Same look, ~zero main-thread cost. */}
       <WeirdOnly>
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-[100]"
-        >
-          <Noise patternAlpha={13} patternRefreshInterval={6} />
-        </div>
+        <div aria-hidden="true" className="grain-overlay" />
       </WeirdOnly>
 
       <Toaster />

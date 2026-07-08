@@ -106,7 +106,7 @@ export default function Nav(): React.JSX.Element {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[100] border-b border-line bg-ink/70 backdrop-blur-md [[data-mode=boring]_&]:bg-bone/80">
+      <header className="fixed inset-x-0 top-0 z-[100] border-b border-line bg-ink/90 [[data-mode=boring]_&]:bg-bone/95">
         <div className="flex items-center justify-between gap-4 px-6 py-4 font-[family-name:var(--font-space-mono)]">
           {/* logo mark */}
           <a

@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { badge, identity } from "@/data/content";
 import { useIsWeird } from "@/lib/mode-store";
+import { usePerfTier } from "@/lib/perf";
 
 /**
  * SECTION 06 — THE BADGE.
@@ -78,6 +79,7 @@ function StaticBadge({ flipped = false }: { flipped?: boolean }) {
 
 export default function BadgeSection() {
   const isWeird = useIsWeird();
+  const perfTier = usePerfTier();
   const sectionRef = useRef<HTMLElement | null>(null);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
   const [near, setNear] = useState<boolean>(false);
@@ -113,9 +115,10 @@ export default function BadgeSection() {
     return () => io.disconnect();
   }, []);
 
-  // 3D on every viewport now — the Lanyard self-tunes below 768px (lower
-  // DPR, coarser physics timestep); we just pull the camera back a touch.
-  const showLanyard = isWeird && near;
+  // 3D on capable viewports — the Lanyard self-tunes below 768px (lower DPR,
+  // coarser physics timestep). Weak devices skip rapier entirely and keep the
+  // static (still flippable) badge, so the page never chugs on the toy.
+  const showLanyard = isWeird && near && perfTier === "high";
 
   // WebGL contexts can be reclaimed by the browser under GPU pressure; when
   // that happens the canvas freezes empty. Remount the scene (max 3 times).
