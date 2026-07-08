@@ -276,10 +276,15 @@ function Band({
 
   // Band only renders once useGLTF/useTexture suspense has resolved, so a
   // mount effect here means "assets loaded, scene is really drawing".
-  // Also seed the meshline so its bounding sphere isn't NaN before the
-  // first physics frame fills in real points.
+  // Seed the meshline with the rig's actual spawn positions — NOT via the
+  // chordal curve (identical points divide by zero → NaN bounding sphere).
   useEffect(() => {
-    band.current?.geometry.setPoints(curve.getPoints(8));
+    band.current?.geometry.setPoints([
+      new THREE.Vector3(1.5, 4, 0),
+      new THREE.Vector3(1, 4, 0),
+      new THREE.Vector3(0.5, 4, 0),
+      new THREE.Vector3(0, 4, 0)
+    ]);
     onReady?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -317,6 +322,19 @@ function Band({
   }, []);
 
   useFrame((state, delta) => {
+    // During unmount/remount React nulls these refs BEFORE the frame
+    // callback is unregistered — one stale frame can still fire. Bail out
+    // unless the whole rig exists (the original only checked `fixed`).
+    if (
+      !band.current ||
+      !fixed.current ||
+      !j1.current ||
+      !j2.current ||
+      !j3.current ||
+      !card.current
+    ) {
+      return;
+    }
     if (dragged && typeof dragged !== 'boolean') {
       vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
       dir.copy(vec).sub(state.camera.position).normalize();
