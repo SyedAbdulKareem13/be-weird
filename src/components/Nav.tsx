@@ -7,7 +7,6 @@ import { gsap, SCRAMBLE_CHARS } from "@/lib/gsap";
 import { useIsWeird } from "@/lib/mode-store";
 import { identity } from "@/data/content";
 import BoringLever from "@/components/BoringLever";
-import SoundToggle from "@/components/SoundToggle";
 import FileReadProgress from "@/components/FileReadProgress";
 
 /**
@@ -172,7 +171,6 @@ export default function Nav(): React.JSX.Element {
             >
               &gt;_
             </button>
-            <SoundToggle />
 
             <div className="origin-right scale-[0.8] md:scale-100">
               <BoringLever />

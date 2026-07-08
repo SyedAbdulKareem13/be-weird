@@ -84,14 +84,17 @@ export default function Lanyard({
   return (
     <div className="relative z-0 w-full h-screen flex justify-center items-center transform scale-100 origin-center">
       <Canvas
-        frameloop={active ? 'always' : 'never'}
         camera={{ position, fov }}
         dpr={[1, isMobile ? 1.5 : 2]}
         gl={{ alpha: transparent }}
         onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)}
       >
         <ambientLight intensity={Math.PI} />
-        <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
+        {/* paused (not frameloop-parked): pausing the SIMULATION saves the
+            physics CPU offscreen, while the render loop stays alive — R3F
+            doesn't reliably restart a parked frameloop on prop change, which
+            left the card frozen at its offscreen spawn point. */}
+        <Physics paused={!active} gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
           <Band
             isMobile={isMobile}
             frontImage={frontImage}

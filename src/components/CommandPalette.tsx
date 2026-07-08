@@ -10,7 +10,6 @@ import { Command } from "cmdk";
 import { animate, utils } from "animejs";
 import { useModeStore } from "@/lib/mode-store";
 import { toast } from "@/lib/toast";
-import { play } from "@/lib/sound";
 import { identity } from "@/data/content";
 import LetterGlitch from "@/components/reactbits/LetterGlitch";
 import Interrogate from "@/components/Interrogate";
@@ -42,17 +41,13 @@ export default function CommandPalette() {
         return;
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setOpen((o) => {
-          if (!o) play("boot");
-          return !o;
-        });
+        setOpen((o) => !o);
       }
       // Ctrl+Shift+I — you tried to inspect the specimen; the specimen
       // inspects you instead. Opens the terminal with an interrogation
       // session on top. (F12 still opens the real DevTools.)
       if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
         e.preventDefault();
-        play("boot");
         setOpen(true);
         setInterrogating(true);
       }
@@ -61,7 +56,6 @@ export default function CommandPalette() {
     const onOpen = () => {
       if (document.documentElement.getAttribute("data-mode") === "boring")
         return;
-      play("boot");
       setOpen(true);
     };
     window.addEventListener("keydown", onKey);
@@ -253,7 +247,6 @@ export default function CommandPalette() {
               onSelect={() => {
                 // terminal stays open underneath — closing the session
                 // drops the researcher back into the terminal
-                play("boot");
                 setInterrogating(true);
               }}
               className="cursor-pointer px-3 py-2 text-xs tracking-[0.2em] uppercase data-[selected=true]:bg-hazard data-[selected=true]:text-ink"

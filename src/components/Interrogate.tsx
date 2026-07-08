@@ -12,7 +12,6 @@ import {
   useState,
   type FormEvent,
 } from "react";
-import { play } from "@/lib/sound";
 
 type QA = { q: string; a: string; keywords: string[] };
 
@@ -192,7 +191,6 @@ export default function Interrogate({
         let i = 0;
         typingTimer.current = window.setInterval(() => {
           i += 1;
-          if (i % 4 === 0) play("tick");
           setLines((prev) => {
             const next = [...prev];
             const last = next[next.length - 1];

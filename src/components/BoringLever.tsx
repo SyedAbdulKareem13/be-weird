@@ -5,7 +5,6 @@ import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { useModeStore, type ArchiveMode } from "@/lib/mode-store";
 import { SCRAMBLE_CHARS } from "@/lib/gsap";
-import { play } from "@/lib/sound";
 import LetterGlitch from "@/components/reactbits/LetterGlitch";
 
 /**
@@ -47,11 +46,7 @@ export default function BoringLever(): React.JSX.Element {
 
   const handlePull = () => {
     hasInteracted.current = true;
-    // sound no-ops while data-mode is boring, so fire on both sides of the
-    // toggle — exactly one of these ever makes a sound
-    play("clunk");
     toggleMode();
-    play("clunk");
 
     const prefersReduced =
       typeof window !== "undefined" &&

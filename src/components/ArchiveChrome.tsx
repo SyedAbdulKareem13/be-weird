@@ -11,7 +11,6 @@ import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useIsWeird, useModeStore } from "@/lib/mode-store";
 import { TOAST_EVENT, toast, type ArchiveToast } from "@/lib/toast";
-import { play } from "@/lib/sound";
 import { calmToast } from "@/data/content";
 import WeirdOnly from "@/components/WeirdOnly";
 import ClickSpark from "@/components/reactbits/ClickSpark";
@@ -252,18 +251,6 @@ export default function ArchiveChrome({
   /* Console easter egg — once per page load. */
   useEffect(() => {
     stampConsole();
-  }, []);
-
-  /* Sound hooks for the lanyard toy — the impulse lands ~250ms after yank. */
-  useEffect(() => {
-    const onYank = () => window.setTimeout(() => play("snap"), 250);
-    const onFlip = () => play("snap");
-    window.addEventListener("archive-yank", onYank);
-    window.addEventListener("archive-flip", onFlip);
-    return () => {
-      window.removeEventListener("archive-yank", onYank);
-      window.removeEventListener("archive-flip", onFlip);
-    };
   }, []);
 
   /* Auto-calm notice: the <head> script may have downgraded to boring
