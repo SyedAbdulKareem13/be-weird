@@ -19,11 +19,11 @@ import { detectPerfTier } from "@/lib/perf";
  *
  * Contract: dispatches window "archive-ready" exactly once in every path
  * (skip-render, skip button, hard cap, natural finish, mode flip).
- * Shows once per session; skipped under reduced motion / boring mode.
- * Append ?boot=force to the URL to replay it.
+ * Plays on EVERY full page load (client-side navigations don't remount the
+ * layout, so moving between pages stays instant). Skipped only under
+ * reduced motion / boring mode; ?boot=force overrides even those.
  */
 
-const SESSION_KEY = "archive-boot-done";
 const READY_EVENT = "archive-ready";
 /** Natural show: draw ~1.9s + hold 0.35s; exit fade 0.5s. Cap is a safety net. */
 const NATURAL_MS = 2250;
@@ -70,15 +70,10 @@ export default function Preloader(): React.ReactElement | null {
     window.dispatchEvent(new Event(READY_EVENT));
   }, []);
 
-  /** Terminal state: mark seen, unmount overlay. Ready fires from the done-effect. */
+  /** Terminal state: unmount overlay. Ready fires from the done-effect. */
   const finishExit = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
-    try {
-      sessionStorage.setItem(SESSION_KEY, "1");
-    } catch {
-      // private mode etc. — non-fatal
-    }
     setPhase("done");
   }, []);
 
@@ -115,16 +110,10 @@ export default function Preloader(): React.ReactElement | null {
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
-    let seen = false;
-    try {
-      seen = sessionStorage.getItem(SESSION_KEY) === "1";
-    } catch {
-      seen = false;
-    }
     const boring =
       document.documentElement.getAttribute("data-mode") === "boring";
 
-    if (!force && (reduced || seen || boring)) {
+    if (!force && (reduced || boring)) {
       finishedRef.current = true; // nothing to exit from
       setPhase("done");
       return;
