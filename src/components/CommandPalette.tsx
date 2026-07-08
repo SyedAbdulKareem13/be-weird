@@ -57,8 +57,19 @@ export default function CommandPalette() {
         setInterrogating(true);
       }
     };
+    // nav button (or anything) can open the terminal without a keyboard
+    const onOpen = () => {
+      if (document.documentElement.getAttribute("data-mode") === "boring")
+        return;
+      play("boot");
+      setOpen(true);
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("archive-open-terminal", onOpen);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("archive-open-terminal", onOpen);
+    };
   }, []);
 
   // pulling the lever while the terminal is up closes everything

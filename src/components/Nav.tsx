@@ -159,6 +159,19 @@ export default function Nav(): React.JSX.Element {
             >
               {time} IST
             </span>
+            <button
+              type="button"
+              data-cursor="INSPECT"
+              data-weird-nav
+              onClick={() =>
+                window.dispatchEvent(new Event("archive-open-terminal"))
+              }
+              aria-label="Open archive terminal"
+              title="Archive terminal (Ctrl+K)"
+              className="border border-line px-2 py-1 text-[11px] font-bold tracking-[0.1em] transition-colors hover:border-hazard hover:text-hazard"
+            >
+              &gt;_
+            </button>
             <SoundToggle />
 
             <div className="origin-right scale-[0.8] md:scale-100">
