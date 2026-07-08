@@ -11,6 +11,11 @@ import { useIsWeird } from "@/lib/mode-store";
 export default function FileReadProgress() {
   const isWeird = useIsWeird();
   const [progress, setProgress] = useState(0);
+  // Render nothing until mounted: SSR can't know the visitor's mode, and a
+  // client that resolved "boring" pre-hydration would otherwise see a
+  // different tree than the server sent (React #418).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!isWeird) return;
@@ -34,7 +39,7 @@ export default function FileReadProgress() {
     };
   }, [isWeird]);
 
-  if (!isWeird) return null;
+  if (!mounted || !isWeird) return null;
 
   return (
     <>

@@ -277,6 +277,17 @@ html[data-mode="boring"] .text-stroke {
   75% { clip-path: inset(25% 0 60% 0); transform: translate(-2px, 1px); }
 }
 
+/* MAXIMUM WEIRD — konami code / console weird(). Attribute-gated, inert
+   otherwise. Double-invert media so photos/canvases stay true-color. */
+html[data-konami="1"] {
+  filter: invert(1) hue-rotate(180deg);
+}
+html[data-konami="1"] img,
+html[data-konami="1"] canvas,
+html[data-konami="1"] video {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 /* ---------- accessibility ---------- */
 
 .skip-link {

@@ -5,9 +5,16 @@
  * BE WEIRD. watermark.
  */
 
+import dynamic from "next/dynamic";
 import { footer } from "@/data/content";
 import WeirdOnly from "@/components/WeirdOnly";
-import FallingText from "@/components/reactbits/FallingText";
+
+// matter-js physics — keep it out of the initial bundle; the heap only
+// exists at the very bottom of the page anyway.
+const FallingText = dynamic(
+  () => import("@/components/reactbits/FallingText"),
+  { ssr: false }
+);
 
 export default function ArchiveFooter() {
   return (

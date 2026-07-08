@@ -6,9 +6,16 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useIsWeird } from "@/lib/mode-store";
 import { toast } from "@/lib/toast";
-import SplashCursor from "@/components/reactbits/SplashCursor";
+
+// WebGL fluid sim — only ever needed for the 10-second konami reward, so it
+// stays out of the initial bundle entirely.
+const SplashCursor = dynamic(
+  () => import("@/components/reactbits/SplashCursor"),
+  { ssr: false }
+);
 
 const KONAMI = [
   "ArrowUp",

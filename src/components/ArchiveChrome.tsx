@@ -33,19 +33,72 @@ const BANNER = `
 ╚═════╝ ╚══════╝     ╚══╝╚══╝ ╚══════╝╚═╝╚═╝  ╚═╝╚═════╝
 `;
 
+const MONO_STYLE = "color:#FF4D00;font-family:monospace;font-size:12px;";
+const DIM_STYLE = "color:#8b8b8b;font-family:monospace;font-size:11px;";
+
+/* The console is part of the archive: a banner plus a working command set.
+   Anyone weird enough to open DevTools gets tools. */
 function stampConsole(): void {
   if (consoleStamped) return;
   consoleStamped = true;
-  // eslint-disable-next-line no-console
+
+  /* eslint-disable no-console */
   console.log(
     `%c${BANNER}`,
     "color:#FF4D00;font-family:monospace;font-size:10px;line-height:1.1;"
   );
-  // eslint-disable-next-line no-console
   console.log(
     "%cRecruiter? The lever is in the nav. → github.com/SyedAbdulKareem13",
-    "color:#FF4D00;font-family:monospace;font-size:12px;font-weight:bold;"
+    MONO_STYLE + "font-weight:bold;"
   );
+  console.log(
+    "%cYou opened the console. Excellent instincts, researcher.\n" +
+      "The archive exposes a console API:\n\n" +
+      "%c  hire()    %c→ the specimen's coordinates\n" +
+      "%c  yank()    %c→ pull the badge (scroll down first)\n" +
+      "%c  flip()    %c→ flip the badge\n" +
+      "%c  boring()  %c→ pull the emergency lever\n" +
+      "%c  weird()   %c→ you'll see",
+    DIM_STYLE,
+    MONO_STYLE, DIM_STYLE,
+    MONO_STYLE, DIM_STYLE,
+    MONO_STYLE, DIM_STYLE,
+    MONO_STYLE, DIM_STYLE,
+    MONO_STYLE, DIM_STYLE
+  );
+
+  const g = window as unknown as Record<string, unknown>;
+  g.hire = () => {
+    console.log(
+      "%cSTATUS: OPEN TO INTERESTING PROBLEMS\n" +
+        "EMAIL:  syedazeeem.13@gmail.com\n" +
+        "GITHUB: github.com/SyedAbdulKareem13\n" +
+        "HANDLE WITH CURIOSITY.",
+      MONO_STYLE
+    );
+    return "COORDINATES TRANSMITTED.";
+  };
+  g.yank = () => {
+    window.dispatchEvent(new Event("archive-yank"));
+    return "YANKED. (THE BADGE IS IN SECTION 06.)";
+  };
+  g.flip = () => {
+    window.dispatchEvent(new Event("archive-flip"));
+    return "FLIPPED.";
+  };
+  g.boring = () => {
+    useModeStore.getState().setMode("boring");
+    return "CALM ENGAGED. THE LEVER BRINGS IT BACK.";
+  };
+  g.weird = () => {
+    useModeStore.getState().setMode("weird");
+    document.documentElement.dataset.konami = "1";
+    window.setTimeout(() => {
+      delete document.documentElement.dataset.konami;
+    }, 4000);
+    return "MAXIMUM WEIRD (4 SECONDS). YOU WERE WARNED.";
+  };
+  /* eslint-enable no-console */
 }
 
 /* ------------------------------------------------------------------ */

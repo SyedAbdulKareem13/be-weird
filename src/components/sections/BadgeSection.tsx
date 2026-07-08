@@ -15,9 +15,10 @@ import { usePerfTier } from "@/lib/perf";
  * text, so the content exists in the DOM in both modes.
  */
 
+// No loading fallback here — BadgeSection keeps a StaticBadge underlay
+// visible until the scene reports onReady, covering chunk + asset loading.
 const Lanyard = dynamic(() => import("@/components/reactbits/Lanyard"), {
   ssr: false,
-  loading: () => <StaticBadge />,
 });
 
 /** Local styles: fallback swing keyframe + height override for the Lanyard
@@ -80,6 +81,8 @@ function StaticBadge({ flipped = false }: { flipped?: boolean }) {
 export default function BadgeSection() {
   const isWeird = useIsWeird();
   const perfTier = usePerfTier();
+  // true once the 3D scene's assets have resolved and it is actually drawing
+  const [sceneReady, setSceneReady] = useState<boolean>(false);
   const sectionRef = useRef<HTMLElement | null>(null);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
   const [near, setNear] = useState<boolean>(false);
@@ -165,22 +168,32 @@ export default function BadgeSection() {
           className="relative mt-6 h-[70svh] min-h-[480px]"
         >
           {showLanyard ? (
-            <div
-              aria-hidden="true"
-              className="badge-lanyard-mount absolute inset-0 [touch-action:pan-y]"
-            >
-              <Lanyard
-                key={glGeneration}
-                active={visible}
-                frontImage="/assets/lanyard/badge-front.png"
-                backImage="/assets/lanyard/badge-back.png"
-                lanyardImage="/assets/lanyard/strap.png"
-                imageFit="cover"
-                transparent
-                position={isDesktop ? [0, 0, 13] : [0, 0, 15]}
-                fov={isDesktop ? 24 : 26}
-              />
-            </div>
+            <>
+              {/* underlay: never show a blank stage — the static badge holds
+                  the fort until the GLB/textures are genuinely rendering */}
+              {!sceneReady && (
+                <div className="absolute inset-0">
+                  <StaticBadge flipped={staticFlipped} />
+                </div>
+              )}
+              <div
+                aria-hidden="true"
+                className="badge-lanyard-mount absolute inset-0 [touch-action:pan-y]"
+              >
+                <Lanyard
+                  key={glGeneration}
+                  active={visible}
+                  onReady={() => setSceneReady(true)}
+                  frontImage="/assets/lanyard/badge-front.png"
+                  backImage="/assets/lanyard/badge-back.png"
+                  lanyardImage="/assets/lanyard/strap.png"
+                  imageFit="cover"
+                  transparent
+                  position={isDesktop ? [0, 0, 13] : [0, 0, 15]}
+                  fov={isDesktop ? 24 : 26}
+                />
+              </div>
+            </>
           ) : (
             <StaticBadge flipped={staticFlipped} />
           )}

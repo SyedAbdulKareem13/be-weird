@@ -27,8 +27,10 @@ import { useIsWeird } from "@/lib/mode-store";
 const SESSION_KEY = "archive-boot-done";
 const READY_EVENT = "archive-ready";
 /** Everything — including the 0.6s block wipe — is gone by 2.5s. */
-const HARD_CAP_MS = 2500;
-const EXIT_MS = 600;
+// Snappy boot: the whole ritual (log + wipe) is over in ~1.4s. A preloader
+// that outstays its welcome reads as slow, not premium.
+const HARD_CAP_MS = 1400;
+const EXIT_MS = 450;
 
 type Phase = "pending" | "active" | "done";
 type GridDims = { cols: number; rows: number };
@@ -161,22 +163,22 @@ export default function Preloader(): React.ReactElement | null {
       const tl = gsap.timeline({ onComplete: beginExit });
       lines.forEach((el, i) => {
         const isLast = i === lines.length - 1;
-        tl.set(el, { opacity: 1 }, i === 0 ? 0.1 : "+=0.06");
+        tl.set(el, { opacity: 1 }, i === 0 ? 0.05 : "+=0.03");
         tl.to(
           el,
           {
-            duration: isLast ? 0.45 : 0.28,
+            duration: isLast ? 0.28 : 0.16,
             ease: "none",
             scrambleText: {
               text: bootLog[i] ?? "",
               chars: SCRAMBLE_CHARS,
-              speed: 0.6,
+              speed: 0.9,
             },
           },
           "<"
         );
       });
-      tl.to({}, { duration: 0.2 }); // beat on the welcome line
+      tl.to({}, { duration: 0.12 }); // beat on the welcome line
       tlRef.current = tl;
     }, rootRef);
 

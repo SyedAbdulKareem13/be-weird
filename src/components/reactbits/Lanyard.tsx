@@ -56,6 +56,8 @@ interface LanyardProps {
   lanyardWidth?: number;
   /** When false, the render loop parks — physics stops burning CPU offscreen. */
   active?: boolean;
+  /** Fires once the GLB + textures have resolved and the scene really renders. */
+  onReady?: () => void;
 }
 
 export default function Lanyard({
@@ -68,7 +70,8 @@ export default function Lanyard({
   imageFit = 'cover',
   lanyardImage = null,
   lanyardWidth = 1,
-  active = true
+  active = true,
+  onReady
 }: LanyardProps) {
   const [isMobile, setIsMobile] = useState<boolean>(() => typeof window !== 'undefined' && window.innerWidth < 768);
 
@@ -96,6 +99,7 @@ export default function Lanyard({
             imageFit={imageFit}
             lanyardImage={lanyardImage}
             lanyardWidth={lanyardWidth}
+            onReady={onReady}
           />
         </Physics>
         <Environment blur={0.75}>
@@ -142,6 +146,7 @@ interface BandProps {
   imageFit?: 'cover' | 'contain';
   lanyardImage?: string | null;
   lanyardWidth?: number;
+  onReady?: () => void;
 }
 
 type LanyardRigidBody = RapierRigidBody & {
@@ -156,7 +161,8 @@ function Band({
   backImage = null,
   imageFit = 'cover',
   lanyardImage = null,
-  lanyardWidth = 1
+  lanyardWidth = 1,
+  onReady
 }: BandProps) {
   const band = useRef<THREE.Mesh<InstanceType<typeof MeshLineGeometry>, InstanceType<typeof MeshLineMaterial>>>(null!);
   const fixed = useRef<RapierRigidBody>(null!);
@@ -264,6 +270,16 @@ function Band({
       };
     }
   }, [hovered, dragged]);
+
+  // Band only renders once useGLTF/useTexture suspense has resolved, so a
+  // mount effect here means "assets loaded, scene is really drawing".
+  // Also seed the meshline so its bounding sphere isn't NaN before the
+  // first physics frame fills in real points.
+  useEffect(() => {
+    band.current?.geometry.setPoints(curve.getPoints(8));
+    onReady?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Command-palette easter egg: "yank the lanyard" fires a window event and
   // the card takes a physics impulse.
