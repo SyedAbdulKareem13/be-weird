@@ -8,7 +8,6 @@ import {
   useState,
 } from "react";
 import { gsap } from "@/lib/gsap";
-import { useIsWeird } from "@/lib/mode-store";
 import { detectPerfTier } from "@/lib/perf";
 
 /**
@@ -18,10 +17,10 @@ import { detectPerfTier } from "@/lib/perf";
  * butter by the time the curtain lifts.
  *
  * Contract: dispatches window "archive-ready" exactly once in every path
- * (skip-render, skip button, hard cap, natural finish, mode flip).
- * Plays on EVERY full page load (client-side navigations don't remount the
- * layout, so moving between pages stays instant). Skipped only under
- * reduced motion / boring mode; ?boot=force overrides even those.
+ * (skip-render, skip button, hard cap, natural finish).
+ * Plays on EVERY full page load, in every mode (client-side navigations
+ * don't remount the layout, so moving between pages stays instant). Under
+ * reduced motion it appears fully-formed instead of drawing on.
  */
 
 const READY_EVENT = "archive-ready";
@@ -53,7 +52,6 @@ function warmHeavyAssets(): void {
 
 export default function Preloader(): React.ReactElement | null {
   const [phase, setPhase] = useState<Phase>("pending");
-  const isWeird = useIsWeird();
 
   const rootRef = useRef<HTMLDivElement | null>(null);
   const helloRef = useRef<SVGPathElement | null>(null);
@@ -104,20 +102,10 @@ export default function Preloader(): React.ReactElement | null {
     });
   }, [finishExit]);
 
-  /* Decide before first paint: show, or skip straight to ready. */
+  /* The greeting ALWAYS plays on a full load — it is the front door of the
+     archive. Under reduced motion we still show it, but statically (no
+     stroke-draw); see the draw effect below. */
   useLayoutEffect(() => {
-    const force = window.location.search.includes("boot=force");
-    const reduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    const boring =
-      document.documentElement.getAttribute("data-mode") === "boring";
-
-    if (!force && (reduced || boring)) {
-      finishedRef.current = true; // nothing to exit from
-      setPhase("done");
-      return;
-    }
     setPhase("active");
   }, []);
 
@@ -128,14 +116,15 @@ export default function Preloader(): React.ReactElement | null {
     return () => window.clearTimeout(t);
   }, [phase, fireReady]);
 
-  /* Mode flipped to boring mid-boot → bail out instantly, no ceremony. */
-  useEffect(() => {
-    if (phase === "active" && !isWeird) finishExit();
-  }, [phase, isWeird, finishExit]);
-
-  /* The greeting: draw "hello" then the hazard "w", hold, exit. */
+  /* The greeting: draw "hello" then the hazard "w", hold, exit. Under
+     reduced motion it appears fully-formed (no stroke-draw) and holds briefly
+     — still always shown, just without the animation. */
   useLayoutEffect(() => {
     if (phase !== "active") return;
+
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -143,8 +132,9 @@ export default function Preloader(): React.ReactElement | null {
     // put the dead time to work
     warmHeavyAssets();
 
+    const holdMs = reduced ? 1100 : NATURAL_MS;
     const capTimer = window.setTimeout(beginExit, HARD_CAP_MS - EXIT_MS);
-    const naturalTimer = window.setTimeout(beginExit, NATURAL_MS);
+    const naturalTimer = window.setTimeout(beginExit, holdMs);
 
     const ctx = gsap.context(() => {
       const hello = helloRef.current;
@@ -153,6 +143,14 @@ export default function Preloader(): React.ReactElement | null {
 
       const helloLength = hello.getTotalLength();
       const wLength = w.getTotalLength();
+
+      if (reduced) {
+        // fully-formed, no drawing
+        gsap.set([hello, w], { strokeDasharray: "none", strokeDashoffset: 0 });
+        gsap.set(captionRef.current, { opacity: 0.55, y: 0 });
+        return;
+      }
+
       gsap.set(hello, {
         strokeDasharray: helloLength,
         strokeDashoffset: helloLength,
