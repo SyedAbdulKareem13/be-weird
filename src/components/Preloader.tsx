@@ -51,7 +51,9 @@ function warmHeavyAssets(): void {
 }
 
 export default function Preloader(): React.ReactElement | null {
-  const [phase, setPhase] = useState<Phase>("pending");
+  // "active" from the first server-rendered byte: the archive opens on the
+  // ink curtain, never on a flash of half-hydrated hero.
+  const [phase, setPhase] = useState<Phase>("active");
 
   const rootRef = useRef<HTMLDivElement | null>(null);
   const helloRef = useRef<SVGPathElement | null>(null);
@@ -102,13 +104,6 @@ export default function Preloader(): React.ReactElement | null {
     });
   }, [finishExit]);
 
-  /* The greeting ALWAYS plays on a full load — it is the front door of the
-     archive. Under reduced motion we still show it, but statically (no
-     stroke-draw); see the draw effect below. */
-  useLayoutEffect(() => {
-    setPhase("active");
-  }, []);
-
   /* Done (any path) → dispatch ready once, after listeners have mounted. */
   useEffect(() => {
     if (phase !== "done") return;
@@ -116,15 +111,11 @@ export default function Preloader(): React.ReactElement | null {
     return () => window.clearTimeout(t);
   }, [phase, fireReady]);
 
-  /* The greeting: draw "hello" then the hazard "w", hold, exit. Under
-     reduced motion it appears fully-formed (no stroke-draw) and holds briefly
-     — still always shown, just without the animation. */
+  /* The greeting: draw "hello" then the hazard "w", hold, exit. It ALWAYS
+     plays, with the animation — the overlay is even part of the server HTML
+     so the archive opens on ink, never on a flash of unstyled hero. */
   useLayoutEffect(() => {
     if (phase !== "active") return;
-
-    const reduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
 
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -132,9 +123,8 @@ export default function Preloader(): React.ReactElement | null {
     // put the dead time to work
     warmHeavyAssets();
 
-    const holdMs = reduced ? 1100 : NATURAL_MS;
     const capTimer = window.setTimeout(beginExit, HARD_CAP_MS - EXIT_MS);
-    const naturalTimer = window.setTimeout(beginExit, holdMs);
+    const naturalTimer = window.setTimeout(beginExit, NATURAL_MS);
 
     const ctx = gsap.context(() => {
       const hello = helloRef.current;
@@ -144,18 +134,16 @@ export default function Preloader(): React.ReactElement | null {
       const helloLength = hello.getTotalLength();
       const wLength = w.getTotalLength();
 
-      if (reduced) {
-        // fully-formed, no drawing
-        gsap.set([hello, w], { strokeDasharray: "none", strokeDashoffset: 0 });
-        gsap.set(captionRef.current, { opacity: 0.55, y: 0 });
-        return;
-      }
-
       gsap.set(hello, {
         strokeDasharray: helloLength,
         strokeDashoffset: helloLength,
+        opacity: 1,
       });
-      gsap.set(w, { strokeDasharray: wLength, strokeDashoffset: wLength });
+      gsap.set(w, {
+        strokeDasharray: wLength,
+        strokeDashoffset: wLength,
+        opacity: 1,
+      });
       gsap.set(captionRef.current, { opacity: 0, y: 8 });
 
       const tl = gsap.timeline();
@@ -205,7 +193,7 @@ export default function Preloader(): React.ReactElement | null {
         >
           <path
             ref={helloRef}
-            className="fill-none stroke-bone"
+            className="fill-none stroke-bone opacity-0"
             strokeWidth="12"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -213,7 +201,7 @@ export default function Preloader(): React.ReactElement | null {
           />
           <path
             ref={wRef}
-            className="fill-none stroke-hazard"
+            className="fill-none stroke-hazard opacity-0"
             strokeWidth="12"
             strokeLinecap="round"
             strokeLinejoin="round"
