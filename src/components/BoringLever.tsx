@@ -64,8 +64,9 @@ export default function BoringLever(): React.JSX.Element {
 
   return (
     <div className="flex select-none items-center gap-2.5 font-[family-name:var(--font-space-mono)]">
-      {/* caption + state readout */}
-      <div className="flex flex-col items-end gap-1 text-right">
+      {/* caption + state readout — desktop only; on mobile the striped
+          lever stands alone and the MENU overlay carries the hint */}
+      <div className="hidden flex-col items-end gap-1 text-right md:flex">
         <span className="whitespace-nowrap text-[9px] uppercase tracking-[0.16em] opacity-70">
           In case of recruiter — pull
         </span>

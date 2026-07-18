@@ -242,6 +242,12 @@ export default function Nav(): React.JSX.Element {
                 ))}
               </ul>
             </nav>
+
+            {/* the lever's caption lives here on mobile — the bar is too
+                narrow to carry it next to the switch */}
+            <p className="specimen-label border-t border-line py-4 text-taxi">
+              IN CASE OF RECRUITER — PULL THE STRIPED LEVER ABOVE ↗
+            </p>
           </div>
         </motion.div>
       )}
