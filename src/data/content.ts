@@ -93,11 +93,23 @@ export type Exhibit = {
   stack: string[];
   clazz: string;
   status: string;
-  repo: string;
+  /** public repo — absent for enterprise work */
+  repo?: string;
   live?: string;
+  /** benched from all listings (data + dossier stay intact) */
+  hidden?: boolean;
 };
 
 export const exhibits: Exhibit[] = [
+  {
+    fileNo: "FILE №000",
+    title: "KEBS CRM",
+    description:
+      "The multi-tenant enterprise CRM + PSA platform I build at KEBS — the suite rebuilt end to end as V2 (Accounts, Opportunity, Quote, Contacts, Leads, Campaign), crowned by a Quote Builder that computes revenue, cost and margin live and walks every deal through a multi-level approval chain to Quote-to-Cash.",
+    stack: ["Angular", "RxJS", "Node.js", "MongoDB", "MySQL", "Docker · Jenkins"],
+    clazz: "ENTERPRISE",
+    status: "IN PRODUCTION",
+  },
   {
     fileNo: "FILE №001",
     title: "MANZIL ONE",
@@ -108,6 +120,7 @@ export const exhibits: Exhibit[] = [
     status: "ACTIVE",
     repo: "https://github.com/SyedAbdulKareem13/manzilone",
     live: "https://manzilone.vercel.app",
+    hidden: true,
   },
   {
     fileNo: "FILE №002",
@@ -141,6 +154,7 @@ export const exhibits: Exhibit[] = [
     status: "SHIPPED",
     repo: "https://github.com/SyedAbdulKareem13/smart-umrah",
     live: "https://smart-umrah.vercel.app",
+    hidden: true,
   },
   {
     fileNo: "FILE №005",

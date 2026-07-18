@@ -51,15 +51,21 @@ export default function DossierPage({ study }: { study: CaseStudy }) {
               OPEN LIVE ↗
             </a>
           ) : null}
-          <a
-            href={study.repo}
-            target="_blank"
-            rel="noreferrer"
-            data-cursor="INSPECT"
-            className={`${MONO} text-xs tracking-[0.16em] text-hazard uppercase underline-offset-4 hover:underline`}
-          >
-            VIEW SOURCE ↗
-          </a>
+          {study.repo ? (
+            <a
+              href={study.repo}
+              target="_blank"
+              rel="noreferrer"
+              data-cursor="INSPECT"
+              className={`${MONO} text-xs tracking-[0.16em] text-hazard uppercase underline-offset-4 hover:underline`}
+            >
+              VIEW SOURCE ↗
+            </a>
+          ) : (
+            <span className="specimen-label">
+              SOURCE: PROPRIETARY · NAMES WITHHELD
+            </span>
+          )}
         </div>
 
         <div className="asterisk-divider mt-12 text-sm">✱ ✱ ✱</div>

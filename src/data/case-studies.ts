@@ -11,13 +11,65 @@ export type CaseStudy = {
   status: string;
   oneLiner: string;
   live?: string;
-  repo: string;
+  /** public repo — absent for enterprise work */
+  repo?: string;
   stack: string[];
   sections: { heading: string; body: string[] }[];
   verdict: string;
+  /** kept out of the sitemap while its exhibit is benched */
+  unlisted?: boolean;
 };
 
 export const caseStudies: CaseStudy[] = [
+  {
+    slug: "kebs-crm",
+    title: "KEBS CRM",
+    fileNo: "CASE FILE №000",
+    classification: "ENTERPRISE",
+    status: "IN PRODUCTION",
+    oneLiner:
+      "The multi-tenant CRM + PSA platform I build for a living — a suite I rebuilt end to end as V2, with a Quote Builder at its heart that turns raw deals into priced, approved, auditable quotations.",
+    stack: [
+      "Angular",
+      "RxJS",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "MySQL",
+      "Docker · Jenkins",
+      "AWS",
+    ],
+    sections: [
+      {
+        heading: "THE PLATFORM",
+        body: [
+          "KEBS is a multi-tenant enterprise CRM and PSA platform serving consulting and services businesses — the kind of software that cannot go down, cannot leak a tenant's data into another's, and cannot ask a client to change how they work. Forms, grids, pipelines and permissions are configuration driven from MongoDB, so every tenant effectively runs their own shape of the product on one codebase.",
+          "I owned the CRM suite frontend for roughly thirty sprints and rebuilt it module by module as the V2 generation: Accounts V2, Opportunity V2, Quote V2, Contacts V2, Leads V2 and Campaign V2 — config-driven forms and grids, Kanban views, audit logs, and per-tenant customization throughout.",
+        ],
+      },
+      {
+        heading: "THE QUOTE MACHINE",
+        body: [
+          "The crown of the suite is the Quote Builder — enterprise deal management wired into CRM, ERP and Projects. Quote configurations are dynamic reactive forms (Angular FormGroups) generated from tenant config, and the money math is live: revenue, cost and gross-margin percentage recompute through RxJS observable streams as the deal is shaped, not after a save button.",
+          "Around that core sit the things real sales teams actually fight about: field-level configuration controls, milestone billing and lumpsum setups, data masking so sensitive pricing stays on a need-to-know basis, multi-level approval workflows with full audit history, change-request handling after a quote has gone out, Quote-to-Cash integration so a won deal flows straight into project delivery, and projection reports so finance can see what's coming before it lands.",
+        ],
+      },
+      {
+        heading: "KEPT IN SYNC",
+        body: [
+          "As Forward Deployed Engineer I now own four product lines end to end — CRM, People Allocation, Timesheet and Integration Systems. The integration layer is the quiet hero: a closed deal flows into resource allocation and time tracking without anyone re-entering data. Tenant-specific rollouts run on idempotent MongoDB migration scripts that are safe to re-run in any environment — boring on purpose, because rollout day is the wrong day for surprises.",
+        ],
+      },
+      {
+        heading: "FIELD RECORD",
+        body: [
+          "Highlights from the file: traced a one-second freeze on the heaviest CRM list view to 3,800+ repeated HTML-sanitizer calls in a single handler and replaced innerHTML bindings with real templates plus virtual scrolling. Published the shared Angular libraries (@kebs-lib/ui, @kebs-lib/forms) that now run across the whole product. Built the platform-wide Document Manager — S3 storage, MongoDB versioning, AES encryption, signed URLs, Gotenberg previews. And I sit on the client calls: requirements in, UAT feedback turned into fixes the same week, often the same day.",
+          "No public repo for this one — it's production enterprise software. Names withheld. Impact wasn't.",
+        ],
+      },
+    ],
+    verdict: "VERDICT: THE BILLS ARE PAID. PROFESSIONALLY.",
+  },
   {
     slug: "manzil-one",
     title: "MANZIL ONE",
@@ -68,6 +120,7 @@ export const caseStudies: CaseStudy[] = [
       },
     ],
     verdict: "VERDICT: THE DAY JOB, WEAPONIZED.",
+    unlisted: true,
   },
   {
     slug: "syncwave",
@@ -197,6 +250,7 @@ export const caseStudies: CaseStudy[] = [
       },
     ],
     verdict: "VERDICT: PIXELS RESPECTED. ALL OF THEM.",
+    unlisted: true,
   },
   {
     slug: "jarvis",

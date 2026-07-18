@@ -205,7 +205,7 @@ function relativeTime(iso: string): string {
 }
 
 function EvidenceLine({ exhibit }: { exhibit: Exhibit }) {
-  const repoName = exhibit.repo.split("/").pop() ?? "";
+  const repoName = exhibit.repo?.split("/").pop() ?? "";
   const stat = (githubStats as Record<
     string,
     { stars: number; pushedAt: string; language: string | null }
@@ -271,15 +271,23 @@ function ExhibitBody({ exhibit }: { exhibit: Exhibit }) {
             OPEN LIVE ↗
           </a>
         ) : null}
-        <a
-          href={exhibit.repo}
-          target="_blank"
-          rel="noreferrer"
-          data-cursor="INSPECT"
-          className={`${MONO} text-xs tracking-[0.16em] text-hazard underline-offset-4 hover:underline`}
-        >
-          VIEW EVIDENCE ↗
-        </a>
+        {exhibit.repo ? (
+          <a
+            href={exhibit.repo}
+            target="_blank"
+            rel="noreferrer"
+            data-cursor="INSPECT"
+            className={`${MONO} text-xs tracking-[0.16em] text-hazard underline-offset-4 hover:underline`}
+          >
+            VIEW EVIDENCE ↗
+          </a>
+        ) : (
+          <span
+            className={`${MONO} text-[0.625rem] uppercase tracking-[0.14em] opacity-50`}
+          >
+            SOURCE: PROPRIETARY
+          </span>
+        )}
       </div>
     </div>
   );
@@ -480,7 +488,7 @@ export default function Exhibits() {
 
       <div className="mx-auto max-w-[1400px]">
         <div className="grid gap-8 lg:grid-cols-2">
-          {exhibits.map((exhibit, i) => (
+          {exhibits.filter((e) => !e.hidden).map((exhibit, i) => (
             <WeirdOnly
               key={exhibit.fileNo}
               fallback={<BoringExhibitCard exhibit={exhibit} index={i} />}

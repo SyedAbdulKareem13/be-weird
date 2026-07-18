@@ -135,7 +135,7 @@ export default function BoringResume() {
         <section className="mt-14">
           <SectionLabel>Selected Projects</SectionLabel>
           <div className="grid gap-x-10 gap-y-8 md:grid-cols-2">
-            {exhibits.map((project) => (
+            {exhibits.filter((e) => !e.hidden).map((project) => (
               <article key={project.title}>
                 <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                   <h3 className={`${SERIF} text-lg font-semibold`}>
@@ -152,14 +152,18 @@ export default function BoringResume() {
                         Live ↗
                       </a>
                     ) : null}
-                    <a
-                      href={project.repo}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={`${NAVY} underline-offset-4 hover:underline`}
-                    >
-                      GitHub ↗
-                    </a>
+                    {project.repo ? (
+                      <a
+                        href={project.repo}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={`${NAVY} underline-offset-4 hover:underline`}
+                      >
+                        GitHub ↗
+                      </a>
+                    ) : (
+                      <span className="text-[#16150F]/45">Proprietary</span>
+                    )}
                   </span>
                 </div>
                 <p className="mt-2 text-[0.875rem] leading-[1.65] text-[#16150F]/75">
@@ -223,10 +227,15 @@ export default function BoringResume() {
   );
 }
 
+const ACRONYMS = new Set(["KEBS", "CRM", "PSA", "AI"]);
+
 function toTitleCase(value: string): string {
   return value
-    .toLowerCase()
     .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) =>
+      ACRONYMS.has(word.toUpperCase())
+        ? word.toUpperCase()
+        : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    )
     .join(" ");
 }

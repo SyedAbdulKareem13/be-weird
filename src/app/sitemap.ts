@@ -9,9 +9,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: BASE,
       lastModified: new Date(),
     },
-    ...caseStudies.map((study) => ({
-      url: `${BASE}/exhibits/${study.slug}`,
-      lastModified: new Date(),
-    })),
+    ...caseStudies
+      .filter((study) => !study.unlisted)
+      .map((study) => ({
+        url: `${BASE}/exhibits/${study.slug}`,
+        lastModified: new Date(),
+      })),
   ];
 }
