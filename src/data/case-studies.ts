@@ -71,9 +71,59 @@ export const caseStudies: CaseStudy[] = [
     verdict: "VERDICT: THE BILLS ARE PAID. PROFESSIONALLY.",
   },
   {
+    slug: "leads",
+    title: "LEADS",
+    fileNo: "CASE FILE №001",
+    classification: "ENTERPRISE",
+    status: "IN PRODUCTION",
+    oneLiner:
+      "The Leads Management System at KEBS — built end to end on Java and Spring Boot in a microservices architecture, and my first real education in what a service boundary costs.",
+    stack: [
+      "Java",
+      "Spring Boot",
+      "Microservices",
+      "REST APIs",
+      "MySQL",
+      "Angular",
+      "Docker · Jenkins",
+    ],
+    sections: [
+      {
+        heading: "THE PROBLEM",
+        body: [
+          "A lead is the noisiest object in a CRM. It arrives from everywhere — web forms, campaign imports, trade shows, a salesperson typing a name into their phone — usually half-filled, frequently duplicated, and always urgent. Then it has to be qualified, owned, worked, and either killed or turned into an Opportunity that the Quote-to-Cash machinery can price.",
+          "The brief was to own that whole path — capture through conversion, backend and front end — inside a multi-tenant platform where every client has their own idea of what makes a lead worth chasing.",
+        ],
+      },
+      {
+        heading: "THE STACK",
+        body: [
+          "The backend is Java on Spring Boot, built as microservices rather than one block: the pieces of the lead lifecycle are separated along what the business actually does, each with its own responsibility and its own deployment. The Angular console on top is a client of the same REST APIs everything else consumes, so there was never a private back door for the UI.",
+          "The rest is deliberately unglamorous — MySQL underneath, services packaged as Docker containers and promoted through Jenkins pipelines into the same multi-tenant environments the rest of the suite runs in.",
+        ],
+      },
+      {
+        heading: "WHAT IT TAUGHT ME",
+        body: [
+          "Microservices as a cost, not a buzzword. Every boundary you draw buys independence and charges you a network call, a failure mode, and a contract you maintain forever. Draw few, draw them where the business already has seams, and version them — that lesson came from this project and I have never stopped applying it.",
+          "The list view is the product. The heaviest screen in a lead system is the grid, so the read path got the attention rather than the features: retrieval time came down by roughly 40% through debounced search and smart caching.",
+          "Owning something end to end changes how you design it. Writing the service and then consuming it from the front end is the fastest feedback loop there is on whether an API is any good.",
+        ],
+      },
+      {
+        heading: "FIELD RECORD",
+        body: [
+          "Leads went live and later became Leads V2 inside the CRM V2 rebuild, where the module picked up the config-driven forms, grids and Kanban views the whole suite shares. It is still the front door of the pipeline — everything the Quote Builder eventually prices starts here.",
+          "No public repo — production enterprise software. Names withheld. Impact wasn't.",
+        ],
+      },
+    ],
+    verdict: "VERDICT: THE LEAD IS THE NOISIEST OBJECT. IT IS ALSO THE FIRST ONE.",
+  },
+  {
     slug: "manzil-one",
     title: "MANZIL ONE",
-    fileNo: "CASE FILE №001",
+    fileNo: "CASE FILE №002",
     classification: "PLATFORM",
     status: "ACTIVE",
     oneLiner:
@@ -125,7 +175,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "syncwave",
     title: "SYNCWAVE",
-    fileNo: "CASE FILE №002",
+    fileNo: "CASE FILE №003",
     classification: "REAL-TIME",
     status: "ACTIVE",
     oneLiner:
@@ -173,7 +223,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "universe-portfolio",
     title: "UNIVERSE PORTFOLIO",
-    fileNo: "CASE FILE №003",
+    fileNo: "CASE FILE №004",
     classification: "EXPERIMENT",
     status: "UNSTABLE (INTENTIONAL)",
     oneLiner:
@@ -214,7 +264,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "smart-umrah",
     title: "SMART UMRAH",
-    fileNo: "CASE FILE №004",
+    fileNo: "CASE FILE №005",
     classification: "CRAFT",
     status: "SHIPPED",
     oneLiner:
@@ -255,7 +305,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "jarvis",
     title: "JARVIS",
-    fileNo: "CASE FILE №005",
+    fileNo: "CASE FILE №006",
     classification: "ROBOT BUTLER",
     status: "LISTENING",
     oneLiner:
