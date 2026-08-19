@@ -26,6 +26,14 @@ Save to `public/assets/evidence/<slug>.jpg`, then compress:
 > concrete walls, bone-white paper, deep shadows, 35mm film grain, slightly
 > damaged photo edges, cinematic, no people.
 
+### leads
+> Archival evidence photograph, 4:3, a vast dark sorting facility at night:
+> hundreds of paper index cards riding pneumatic tubes and conveyor tracks
+> toward a single illuminated inspection desk, most cards falling into a
+> reject chute, one card spotlit in safety-orange at the center, ink-black
+> industrial hall, bone-white cards, 35mm film grain, damaged photo edges,
+> no people.
+
 ### syncwave
 > Archival evidence photograph, 4:3, a dark room full of silhouetted people
 > wearing headphones, every head tilted at the identical angle mid-nod,
