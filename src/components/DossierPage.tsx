@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CaseStudy } from "@/data/case-studies";
+import { evidencePhotos } from "@/data/media";
 
 const MONO = "font-[family-name:var(--font-space-mono)]";
 const DISPLAY = "font-[family-name:var(--font-bricolage)]";
@@ -67,6 +68,24 @@ export default function DossierPage({ study }: { study: CaseStudy }) {
             </span>
           )}
         </div>
+
+        {/* evidence photo — renders only once the asset lands in media.ts */}
+        {evidencePhotos[study.slug] ? (
+          <figure className="mt-12 -rotate-1">
+            <div className="cut-here inline-block bg-specimen p-3 md:p-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={evidencePhotos[study.slug].src}
+                alt={evidencePhotos[study.slug].alt}
+                loading="lazy"
+                className="max-h-[420px] w-auto max-w-full"
+              />
+            </div>
+            <figcaption className="specimen-label mt-3">
+              {evidencePhotos[study.slug].caption} · {study.fileNo}
+            </figcaption>
+          </figure>
+        ) : null}
 
         <div className="asterisk-divider mt-12 text-sm">✱ ✱ ✱</div>
 

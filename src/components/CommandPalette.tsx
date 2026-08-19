@@ -13,6 +13,8 @@ import { toast } from "@/lib/toast";
 import { identity } from "@/data/content";
 import LetterGlitch from "@/components/reactbits/LetterGlitch";
 import Interrogate from "@/components/Interrogate";
+import SurveillanceFeed from "@/components/SurveillanceFeed";
+import { surveillanceFeed } from "@/data/media";
 
 const SECTIONS: { id: string; label: string }[] = [
   { id: "specimen", label: "01 SPECIMEN" },
@@ -28,6 +30,7 @@ export default function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [destructing, setDestructing] = useState(false);
   const [interrogating, setInterrogating] = useState(false);
+  const [watching, setWatching] = useState(false);
   const { mode, toggleMode } = useModeStore();
   const inputRef = useRef<HTMLInputElement>(null);
   // read inside same-tick event handlers (Radix Escape vs our Escape)
@@ -253,6 +256,17 @@ export default function CommandPalette() {
             >
               INTERROGATE THE SPECIMEN
             </Command.Item>
+            {surveillanceFeed ? (
+              <Command.Item
+                onSelect={() => {
+                  setOpen(false);
+                  setWatching(true);
+                }}
+                className="cursor-pointer px-3 py-2 text-xs tracking-[0.2em] uppercase data-[selected=true]:bg-hazard data-[selected=true]:text-ink"
+              >
+                VIEW SURVEILLANCE
+              </Command.Item>
+            ) : null}
             <Command.Item
               onSelect={selfDestruct}
               className="cursor-pointer px-3 py-2 text-xs tracking-[0.2em] uppercase data-[selected=true]:bg-hazard data-[selected=true]:text-ink"
@@ -287,6 +301,13 @@ export default function CommandPalette() {
           aria-label="Close archive terminal"
           className="fixed inset-0 z-[139] bg-ink/60 backdrop-blur-[2px]"
           onClick={() => setOpen(false)}
+        />
+      )}
+
+      {watching && surveillanceFeed && (
+        <SurveillanceFeed
+          clip={surveillanceFeed}
+          onClose={() => setWatching(false)}
         />
       )}
 

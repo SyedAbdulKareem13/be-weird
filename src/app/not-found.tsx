@@ -7,11 +7,32 @@
 import Link from "next/link";
 import WeirdOnly from "@/components/WeirdOnly";
 import FuzzyText from "@/components/reactbits/FuzzyText";
+import { escapeFootage } from "@/data/media";
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-[100svh] flex-col items-center justify-center gap-8 bg-ink px-6 text-center">
-      <p className="specimen-label">FILE №404 · STATUS: MISSING</p>
+    <main className="relative flex min-h-[100svh] flex-col items-center justify-center gap-8 overflow-hidden bg-ink px-6 text-center">
+      {/* recovered containment footage — lights up once the asset lands */}
+      {escapeFootage ? (
+        <WeirdOnly>
+          <div aria-hidden="true" className="absolute inset-0">
+            <video
+              src={escapeFootage.video}
+              poster={escapeFootage.poster}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="h-full w-full object-cover opacity-25"
+            />
+            <span className="specimen-label absolute top-24 left-6 text-hazard">
+              {escapeFootage.label} · REC ●
+            </span>
+          </div>
+        </WeirdOnly>
+      ) : null}
+
+      <p className="specimen-label relative">FILE №404 · STATUS: MISSING</p>
 
       <WeirdOnly
         fallback={
