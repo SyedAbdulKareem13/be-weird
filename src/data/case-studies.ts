@@ -121,9 +121,99 @@ export const caseStudies: CaseStudy[] = [
     verdict: "VERDICT: THE LEAD IS THE NOISIEST OBJECT. IT IS ALSO THE FIRST ONE.",
   },
   {
+    slug: "kais",
+    title: "KAIS",
+    fileNo: "CASE FILE №002",
+    classification: "GEN-AI",
+    status: "IN PRODUCTION",
+    oneLiner:
+      "The AI layer across the KEBS suite — search you can talk to, documents that answer questions, and agents that draft quotations and staff projects. Built on one rule: the model proposes, the platform decides.",
+    stack: [
+      "LLM Orchestration",
+      "RAG",
+      "Embeddings",
+      "MongoDB Atlas Vector Search",
+      "Node.js",
+      "Angular",
+      "MongoDB",
+      "MySQL",
+    ],
+    sections: [
+      {
+        heading: "THE PREMISE",
+        body: [
+          "Enterprise software asks a lot of its users. To answer “which enterprise deals in Chennai stalled after the quote went out”, someone has to know that the question decomposes into six filters across three modules, and where each of those filters lives in the UI. To find one clause, someone reads a forty-page contract. To price a deal, someone remembers what a similar deal went out at eighteen months ago. All three are knowledge problems dressed up as interface problems.",
+          "KAIS is the layer that absorbs them. It is not a chatbot bolted onto a sidebar — it is a set of capabilities wired into the modules that already own the data, each one designed around the same constraint: this is software people bill clients from, so the model is never the last word.",
+        ],
+      },
+      {
+        heading: "ASK, DON'T FILTER",
+        body: [
+          "The natural-language search is the feature people notice first. You type what you want in a sentence and the filter stack you would otherwise have assembled by hand — module, stage, owner, geography, date window, amount band — comes back already applied.",
+          "The important part is what does not happen: the model never touches the database and never writes a query. It resolves the prompt into a structured filter object, validated against that tenant's own field configuration — the same config that drives the module's forms and grids — and rejects anything that does not typecheck against a real field, operator and value. The platform's existing query layer executes it, which means row-level permissions, tenant scoping and audit logging all apply exactly as they do to a hand-built filter. A wrong guess produces a wrong result set, visibly, on screen, where the user can correct it in one edit; it cannot produce a leak.",
+          "That design also made the feature explainable. The resolved filters render as chips the user can see and tweak, so the answer to “why did it return this?” is always on screen rather than buried in a prompt.",
+        ],
+      },
+      {
+        heading: "THE PIPELINE, IN A PARAGRAPH",
+        body: [
+          "The pipeline summary answers the question a sales manager actually opens the CRM to ask: what changed, what is stuck, and what is about to slip. It reads the pipeline's current state and returns a short brief — movement by stage, deals gone quiet past their expected cycle time, quotes waiting on an approval step, and where the number lands against target — plus a per-deal status line explaining why that deal is where it is.",
+          "Every figure in that brief is computed by the platform, not by the model. Aggregations, ageing, stage velocity and totals come out of the existing reporting queries and are handed to the model as facts; the model's only job is to turn them into prose and decide what deserves attention first. Language models are unreliable arithmetic engines and excellent narrators, so the architecture gives each side the job it is good at. It also means a summary can never quietly invent a number that finance will later have to defend.",
+        ],
+      },
+      {
+        heading: "SUMMARISE, SAFELY",
+        body: [
+          "Document summarisation is where an AI feature in enterprise software goes wrong most easily, because the failure is silent: a summary is a very efficient way to move text past an access-control boundary. The “safe” in safe summarisation is the whole feature.",
+          "Access is resolved before retrieval, not after generation — if the requesting user cannot open the document in the Document Manager, no page of it ever reaches a prompt. Retrieval is scoped to the tenant, so one client's corpus is structurally unable to inform another's answer. Sensitive fields flagged in the platform's configuration — pricing, personal data, anything under masking rules — are redacted on the way into the context window rather than trusted to be omitted from the way out. And nothing is retained: prompts and contexts are transient, so a summary request leaves no copy of a client's contract sitting anywhere new.",
+          "It builds directly on the Document Manager I had already shipped — S3 storage with MongoDB versioning, AES encryption, signed URLs, role-based access — which is what made the safety boundary something to inherit rather than invent.",
+        ],
+      },
+      {
+        heading: "THE TEN-PAGE PROBLEM",
+        body: [
+          "Keyword search over documents fails in a specific, maddening way. A ten-page vendor agreement mentions “Supabase” exactly once, on page seven, in a clause about hosting dependencies. Search the application for Supabase and — unless someone happened to type it into a title, tag or description — that document does not exist.",
+          "Semantic document search fixes it at the chunking layer. Documents are split at page level, each page is embedded, and the vectors are indexed in MongoDB Atlas Vector Search alongside the document metadata. A query is embedded the same way and matched by approximate nearest-neighbour, so the search returns the document and, crucially, the page that earned the hit — you land on page seven rather than at page one of ten.",
+          "Page-level was a deliberate choice over both extremes. Embedding a whole document dilutes a single mention into statistical noise; embedding every paragraph multiplies index size and returns fragments with no context to read. A page is the unit a person can actually be shown. Vector results are merged with the existing keyword results rather than replacing them, because exact-match search is still the right tool when someone knows precisely what they are looking for.",
+        ],
+      },
+      {
+        heading: "KAIS ON THE QUOTATION BUILDER",
+        body: [
+          "This is the agent I am proudest of, because pricing is the hardest thing in the suite to be helpful about without being dangerous. A quotation for a services deal is an act of judgement: which roles, at what seniority and rate, for how long, with what margin, shaped by how similar work was priced before.",
+          "KAIS drafts it from three inputs. First, the tenant's rate cards — the authoritative designation × experience × grade × location matrix. Second, an anonymised history of previous quotations: client identifiers and commercially sensitive specifics are scrambled out, leaving the shape of past deals — role mixes, durations, discount behaviour, margin bands — as the pattern to learn from. Third, the opportunity's own context: service type, duration, estimated effort, geography. From that it proposes a line-item quotation with a defensible rationale per line.",
+          "Then it stops. The agent proposes structure and rates; it does not compute money. Revenue, cost and gross-margin percentage are still calculated by the Quote Builder's own RxJS streams from the rates in the draft, so the figures on a KAIS-drafted quote come from the same engine as every hand-built quote in the system and reconcile against it exactly. And nothing skips the queue: a drafted quotation enters the same multi-level approval chain, with the same audit trail, as one typed from scratch. It shortens the blank-page problem from an afternoon to a review — it does not remove the signature.",
+        ],
+      },
+      {
+        heading: "KAIS ON PEOPLE ALLOCATION",
+        body: [
+          "The staffing question — who should actually do this work — looks like a ranking problem and is really a constraint problem. Skills and certifications have to match. The person has to be available for the window, not already committed elsewhere. Cost has to fit the band the deal was priced at. Location, time zone and client-specific restrictions are sometimes contractual. Utilisation targets pull in the opposite direction from all of it.",
+          "So the rules run first, deterministically, in code: the allocation engine filters the bench to the set of people who genuinely satisfy every hard constraint, and that filter is not something the model can talk its way around. KAIS then works only inside that feasible set, ranking candidates on the softer trade-offs — bench time, skill adjacency, continuity with the account, how a placement moves utilisation — and returning recommendations with the reasoning attached, so a resourcing manager gets an argument to agree or disagree with rather than a name to accept on faith.",
+          "It plugs into the integration layer I already owned between CRM, People Allocation and Timesheet, so a recommendation that gets accepted flows into the allocation and its downstream time tracking without re-entry — the same path a manual allocation takes.",
+        ],
+      },
+      {
+        heading: "THE RULE UNDERNEATH ALL OF IT",
+        body: [
+          "Every one of these features is the same rule wearing a different hat: the model proposes, the platform decides. It never holds database credentials — it emits a validated object the platform executes. It never does arithmetic that a client will be invoiced from — it narrates figures the platform computed. It never sees data the requesting user could not already open — access is resolved before retrieval, not after generation. And it never commits anything — a draft quotation, a staffing recommendation, a resolved filter are all proposals a human accepts, in the approval chains and audit trails that were already there.",
+          "None of that is a limitation I worked around; it is the reason the features survived contact with real clients. The trust boundary is the product. Everything else is plumbing — retrieval, chunking, embeddings, prompt assembly — and plumbing is the easy part.",
+        ],
+      },
+      {
+        heading: "FIELD RECORD",
+        body: [
+          "Shipped as part of the Forward Deployed Engineer remit, across CRM, the Document Manager, the Quote Builder and People Allocation — designed on client calls, demoed to the people who would have to trust it, and rolled out per tenant with the rest of the suite.",
+          "No public repo — production enterprise software. Names withheld. Impact wasn't.",
+        ],
+      },
+    ],
+    verdict: "VERDICT: THE MODEL PROPOSES. THE PLATFORM DECIDES.",
+  },
+  {
     slug: "manzil-one",
     title: "MANZIL ONE",
-    fileNo: "CASE FILE №002",
+    fileNo: "CASE FILE №003",
     classification: "PLATFORM",
     status: "ACTIVE",
     oneLiner:
@@ -175,7 +265,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "syncwave",
     title: "SYNCWAVE",
-    fileNo: "CASE FILE №003",
+    fileNo: "CASE FILE №004",
     classification: "REAL-TIME",
     status: "ACTIVE",
     oneLiner:
@@ -223,7 +313,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "universe-portfolio",
     title: "UNIVERSE PORTFOLIO",
-    fileNo: "CASE FILE №004",
+    fileNo: "CASE FILE №005",
     classification: "EXPERIMENT",
     status: "UNSTABLE (INTENTIONAL)",
     oneLiner:
@@ -264,7 +354,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "smart-umrah",
     title: "SMART UMRAH",
-    fileNo: "CASE FILE №005",
+    fileNo: "CASE FILE №006",
     classification: "CRAFT",
     status: "SHIPPED",
     oneLiner:
@@ -305,7 +395,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: "jarvis",
     title: "JARVIS",
-    fileNo: "CASE FILE №006",
+    fileNo: "CASE FILE №007",
     classification: "ROBOT BUTLER",
     status: "LISTENING",
     oneLiner:

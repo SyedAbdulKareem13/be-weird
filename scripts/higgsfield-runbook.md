@@ -34,6 +34,14 @@ Save to `public/assets/evidence/<slug>.jpg`, then compress:
 > industrial hall, bone-white cards, 35mm film grain, damaged photo edges,
 > no people.
 
+### kais
+> Archival evidence photograph, 4:3, a dim archive room where a single
+> bone-white document page hovers upright in a beam of safety-orange light,
+> hundreds of identical pages filed in ink-black cabinets receding into
+> darkness behind it, one thin orange thread running from the lit page back
+> into the stacks, faint grid of light on the floor, 35mm film grain,
+> damaged photo edges, no people, no readable text.
+
 ### syncwave
 > Archival evidence photograph, 4:3, a dark room full of silhouetted people
 > wearing headphones, every head tilted at the identical angle mid-nod,

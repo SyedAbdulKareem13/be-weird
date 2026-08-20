@@ -35,6 +35,7 @@ export const rotatingRoles = [
   "ANGULAR ALCHEMIST",
   "SPRING BOOT MECHANIC",
   "GEN-AI TINKERER",
+  "RAG PLUMBER",
   "PIXEL WRANGLER",
   "SAAS ARCHITECT",
   "PROFESSIONAL WEIRDO",
@@ -44,7 +45,7 @@ export const fieldNotes = {
   stamp: "OBSERVATION LOG",
   headline: "MOSTLY HARMLESS. OCCASIONALLY BRILLIANT.",
   manifesto:
-    "Four years inside enterprise CRM taught me how software behaves at scale — multi-tenant platforms, config-driven UIs, systems that cannot go down. I work both sides of the wire: Angular in the browser, and Java with Spring Boot in a microservices architecture behind it, talking over REST APIs and shipped through Docker and Jenkins. Nights taught me the opposite lesson: software should also make you feel something. This archive holds both. The classified files pay the bills. The exhibits keep me weird.",
+    "Four years inside enterprise CRM taught me how software behaves at scale — multi-tenant platforms, config-driven UIs, systems that cannot go down. I work both sides of the wire: Angular in the browser, and Java with Spring Boot in a microservices architecture behind it, talking over REST APIs and shipped through Docker and Jenkins. Lately the interesting half is KAIS — putting language models inside software that cannot afford to be wrong, which turns out to be less about prompts and more about boundaries: what the model is allowed to see, what it is allowed to compute, and who signs off on what it says. Nights taught me the opposite lesson: software should also make you feel something. This archive holds both. The classified files pay the bills. The exhibits keep me weird.",
   facts: [
     "EXP: 3.5+ YRS",
     "CURRENT HOST: KEBS · 4 PRODUCT LINES",
@@ -95,8 +96,21 @@ export const skillGroups: SkillGroup[] = [
     items: ["MongoDB", "MySQL", "AWS RDS", "Prisma", "Supabase"],
   },
   {
-    label: "INFRA+AI",
-    items: ["Docker", "Jenkins", "AWS S3/EC2", "Azure Pipelines", "OpenAI API", "LangChain", "GenAI in CRM"],
+    label: "INFRA",
+    items: ["Docker", "Jenkins", "AWS S3/EC2", "Azure Pipelines"],
+  },
+  {
+    label: "GEN-AI",
+    items: [
+      "LLM Orchestration",
+      "RAG",
+      "Embeddings",
+      "Vector Search",
+      "MongoDB Atlas Vector Search",
+      "Prompt Engineering",
+      "Agentic Workflows",
+      "LangChain",
+    ],
   },
 ];
 
@@ -143,6 +157,23 @@ export const exhibits: Exhibit[] = [
   },
   {
     fileNo: "FILE №002",
+    title: "KAIS",
+    description:
+      "The AI layer across the KEBS suite — natural-language CRM search that retires the filter stack, generated pipeline summaries, permission-safe document summarisation, semantic search that finds a word buried on page seven of ten, and the KAIS agents that draft quotations off rate cards and recommend people allocations inside the rules.",
+    stack: [
+      "LLM Orchestration",
+      "RAG",
+      "Embeddings",
+      "MongoDB Atlas Vector Search",
+      "Node.js",
+      "Angular",
+      "MongoDB",
+    ],
+    clazz: "GEN-AI",
+    status: "IN PRODUCTION",
+  },
+  {
+    fileNo: "FILE №003",
     title: "MANZIL ONE",
     description:
       "Production-ready multi-tenant CRM SaaS for consulting, staffing and project businesses: lead-to-quote pipeline, RFQs, live margin math, AI-powered workflows.",
@@ -154,7 +185,7 @@ export const exhibits: Exhibit[] = [
     hidden: true,
   },
   {
-    fileNo: "FILE №003",
+    fileNo: "FILE №004",
     title: "SYNCWAVE",
     description:
       "Silent disco on the web: a host picks a track, every device in the room hears the exact same moment of the song in perfect sync — NTP-style clock magic.",
@@ -165,7 +196,7 @@ export const exhibits: Exhibit[] = [
     live: "https://syncwave-web-kappa.vercel.app",
   },
   {
-    fileNo: "FILE №004",
+    fileNo: "FILE №005",
     title: "UNIVERSE PORTFOLIO",
     description:
       "3D “Laws of the Universe” physics playground; a black hole swallows the whole site into THE END, then REVIVE restores it.",
@@ -176,7 +207,7 @@ export const exhibits: Exhibit[] = [
     live: "https://universe-portfolio-orcin.vercel.app",
   },
   {
-    fileNo: "FILE №005",
+    fileNo: "FILE №006",
     title: "SMART UMRAH",
     description:
       "Luxury Umrah-booking frontend; pixel-perfect recreation of the design handoff with every animation preserved.",
@@ -188,7 +219,7 @@ export const exhibits: Exhibit[] = [
     hidden: true,
   },
   {
-    fileNo: "FILE №006",
+    fileNo: "FILE №007",
     title: "JARVIS",
     description:
       "Python desktop voice assistant: speech control, web automation, email/WhatsApp, OpenCV face recognition.",
@@ -227,9 +258,9 @@ export const classified: ClassifiedFile[] = [
   },
   {
     fileNo: "FILE №C-04",
-    title: "GEN-AI IN CRM",
+    title: "KAIS · THE AI LAYER",
     description:
-      "GPT-backed natural-language search resolving to structured filters, plus AI automation woven through the CRM — with layered trust boundaries.",
+      "The assistant layer running across the suite. One rule holds all of it together: the model proposes, the platform decides — no direct database access, no arithmetic, and no permission it did not already have.",
   },
   {
     fileNo: "FILE №C-05",
@@ -242,6 +273,42 @@ export const classified: ClassifiedFile[] = [
     title: "THE 3,800-CALL FREEZE",
     description:
       "Traced a one-second UI freeze on the heaviest CRM list to 3,800+ repeated sanitizer calls in one handler; replaced innerHTML with real templates and virtual scrolling.",
+  },
+  {
+    fileNo: "FILE №C-07",
+    title: "CRM AI SEARCH",
+    description:
+      "Ask instead of filter: “enterprise deals in Chennai that stalled after the quote went out” becomes a validated filter object built against the tenant's own field config, then executed by the existing query layer with every permission intact.",
+  },
+  {
+    fileNo: "FILE №C-08",
+    title: "PIPELINE SUMMARY",
+    description:
+      "The pipeline in a paragraph — what moved, what stalled, what is at risk and whose desk it sits on. The platform computes every number; the model only narrates the ones it is handed.",
+  },
+  {
+    fileNo: "FILE №C-09",
+    title: "SAFE SUMMARISATION",
+    description:
+      "Document summaries that cannot leak: access checked before a page is ever read, tenant isolation on the retrieval path, sensitive fields redacted pre-prompt, and nothing retained after the answer.",
+  },
+  {
+    fileNo: "FILE №C-10",
+    title: "SEMANTIC DOC SEARCH",
+    description:
+      "Page-level embeddings in MongoDB Atlas Vector Search: one word buried on page seven of a ten-page contract surfaces the document and the page, ranked beside the keyword hits rather than instead of them.",
+  },
+  {
+    fileNo: "FILE №C-11",
+    title: "KAIS QUOTATION AGENT",
+    description:
+      "Rate cards, anonymised history from every past quote, and the opportunity's own service type, duration and estimate go in; a drafted quotation comes out. The Quote Builder still does the money math, and a human still signs.",
+  },
+  {
+    fileNo: "FILE №C-12",
+    title: "KAIS ALLOCATION AGENT",
+    description:
+      "Staffing recommendations where the rules are hard constraints, not suggestions: skills, availability, cost band, location and utilisation filter the field deterministically, then the model ranks who fits and says why.",
   },
 ];
 
@@ -276,7 +343,7 @@ export const incidents: Incident[] = [
     year: "2026–NOW",
     title: "AI ERA",
     detail:
-      "Forward Deployed Engineer. Four product lines owned end to end — CRM, People Allocation, Timesheet, Integrations. Client calls to production rollouts, fixes shipped the same week.",
+      "Forward Deployed Engineer. Four product lines owned end to end — CRM, People Allocation, Timesheet, Integrations — and KAIS, the AI layer across them: natural-language search, semantic document retrieval, and the agents that draft quotations and staff projects. Client calls to production rollouts, fixes shipped the same week.",
   },
 ];
 
@@ -308,6 +375,8 @@ export const footer = {
     "spring boot",
     "node",
     "mongodb",
+    "rag",
+    "embeddings",
     "weird",
     "curious",
     "caffeine",
@@ -344,7 +413,7 @@ export const boringResume = {
   headline:
     "Forward Deployed Engineer · Full Stack · Java & Spring Boot Microservices · Generative AI · SaaS, CRM & Q2C",
   summary:
-    "Full-stack developer with 3.5+ years at KEBS, a multi-tenant CRM and PSA platform, promoted from intern to Forward Deployed Engineer. I own end-to-end delivery for four product lines — CRM, People Allocation, Timesheet, and Integration Systems — sitting between enterprise clients and the codebase: requirements on client calls, solution design, build across Angular, Java/Spring Boot and Node.js, and staying through UAT and go-live. On the backend I work in Java with Spring Boot in a microservices architecture — designing service boundaries, building the REST APIs the front ends consume, working against MySQL and MongoDB, and shipping the services as Docker containers through Jenkins pipelines. Known for shipping complex features in days without regressions, and for building the shared libraries and tooling the rest of the team now runs on.",
+    "Full-stack developer with 3.5+ years at KEBS, a multi-tenant CRM and PSA platform, promoted from intern to Forward Deployed Engineer. I own end-to-end delivery for four product lines — CRM, People Allocation, Timesheet, and Integration Systems — sitting between enterprise clients and the codebase: requirements on client calls, solution design, build across Angular, Java/Spring Boot and Node.js, and staying through UAT and go-live. On the backend I work in Java with Spring Boot in a microservices architecture — designing service boundaries, building the REST APIs the front ends consume, working against MySQL and MongoDB, and shipping the services as Docker containers through Jenkins pipelines. I also build the platform's AI layer, KAIS: natural-language search that compiles to validated filters, retrieval-augmented document search over page-level embeddings in MongoDB Atlas Vector Search, and assistant agents for quotation drafting and people allocation — all designed so the model proposes and the platform decides. Known for shipping complex features in days without regressions, and for building the shared libraries and tooling the rest of the team now runs on.",
   roles: [
     {
       title: "Forward Deployed Engineer",
@@ -354,6 +423,9 @@ export const boringResume = {
         "Own four product lines end to end — CRM, People Allocation, Timesheet, and Integration Systems — from requirement calls through design, build, UAT, and production rollout.",
         "Built and maintain the integration layer that keeps CRM, People Allocation, and Timesheet in sync: a closed deal flows into resource allocation and time tracking without re-entry.",
         "Run tenant-specific rollouts on the platform's MongoDB configuration engine using idempotent migration scripts that are safe to re-run in any environment.",
+        "Built KAIS, the suite's AI layer: natural-language CRM search that compiles a prompt into a validated filter object against each tenant's field config, generated pipeline summaries narrated over platform-computed figures, and permission-safe document summarisation.",
+        "Implemented semantic document search with page-level chunking and embeddings indexed in MongoDB Atlas Vector Search, so a term appearing once inside a long document surfaces both the document and the page, ranked alongside keyword results.",
+        "Shipped the KAIS quotation agent — rate cards, anonymised historical quotes, and opportunity context (service type, duration, estimate) drafted into a quotation the Quote Builder prices and a human approves — and the allocation agent, which ranks staffing options inside deterministic rule constraints.",
         "Act as the technical face of the product for client teams — demos, architecture walkthroughs, and same-week turnaround on UAT feedback.",
       ],
     },
