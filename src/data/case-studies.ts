@@ -77,16 +77,8 @@ export const caseStudies: CaseStudy[] = [
     classification: "ENTERPRISE",
     status: "IN PRODUCTION",
     oneLiner:
-      "The Leads Management System at KEBS — built end to end on Java and Spring Boot in a microservices architecture, and my first real education in what a service boundary costs.",
-    stack: [
-      "Java",
-      "Spring Boot",
-      "Microservices",
-      "REST APIs",
-      "MySQL",
-      "Angular",
-      "Docker · Jenkins",
-    ],
+      "The Leads Management System at KEBS — the first thing I owned end to end, front end through backend, and my real education in what it takes to make the noisiest object in a CRM behave.",
+    stack: ["Angular", "REST APIs", "MySQL", "Docker · Jenkins"],
     sections: [
       {
         heading: "THE PROBLEM",
@@ -96,16 +88,16 @@ export const caseStudies: CaseStudy[] = [
         ],
       },
       {
-        heading: "THE STACK",
+        heading: "THE SHAPE OF IT",
         body: [
-          "The backend is Java on Spring Boot, built as microservices rather than one block: the pieces of the lead lifecycle are separated along what the business actually does, each with its own responsibility and its own deployment. The Angular console on top is a client of the same REST APIs everything else consumes, so there was never a private back door for the UI.",
-          "The rest is deliberately unglamorous — MySQL underneath, services packaged as Docker containers and promoted through Jenkins pipelines into the same multi-tenant environments the rest of the suite runs in.",
+          "The backend is split along what the business actually does rather than along database tables — capture and ingestion, qualification, ownership and assignment, conversion into Opportunity — each piece with its own responsibility instead of one block that does everything badly. The Angular console on top is a client of the same REST APIs everything else consumes, so there was never a private back door for the UI, and the API stayed honest because I had to use it myself.",
+          "The rest is deliberately unglamorous — MySQL underneath, packaged as Docker containers and promoted through Jenkins pipelines into the same multi-tenant environments the rest of the suite runs in.",
         ],
       },
       {
         heading: "WHAT IT TAUGHT ME",
         body: [
-          "Microservices as a cost, not a buzzword. Every boundary you draw buys independence and charges you a network call, a failure mode, and a contract you maintain forever. Draw few, draw them where the business already has seams, and version them — that lesson came from this project and I have never stopped applying it.",
+          "Boundaries are a cost, not a free win. Every seam you cut into a system buys independence and charges you a call across it, a new failure mode, and a contract you maintain forever. Cut few, cut them where the business already has seams, and version them — that lesson came from this project and I have never stopped applying it.",
           "The list view is the product. The heaviest screen in a lead system is the grid, so the read path got the attention rather than the features: retrieval time came down by roughly 40% through debounced search and smart caching.",
           "Owning something end to end changes how you design it. Writing the service and then consuming it from the front end is the fastest feedback loop there is on whether an API is any good.",
         ],

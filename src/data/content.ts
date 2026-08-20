@@ -33,7 +33,6 @@ export const tickerPhrases = ["BE WEIRD", "SHIP THINGS", "STAY CURIOUS"];
 export const rotatingRoles = [
   "FORWARD DEPLOYED ENGINEER",
   "ANGULAR ALCHEMIST",
-  "SPRING BOOT MECHANIC",
   "GEN-AI TINKERER",
   "RAG PLUMBER",
   "PIXEL WRANGLER",
@@ -45,11 +44,10 @@ export const fieldNotes = {
   stamp: "OBSERVATION LOG",
   headline: "MOSTLY HARMLESS. OCCASIONALLY BRILLIANT.",
   manifesto:
-    "Four years inside enterprise CRM taught me how software behaves at scale — multi-tenant platforms, config-driven UIs, systems that cannot go down. I work both sides of the wire: Angular in the browser, and Java with Spring Boot in a microservices architecture behind it, talking over REST APIs and shipped through Docker and Jenkins. Lately the interesting half is KAIS — putting language models inside software that cannot afford to be wrong, which turns out to be less about prompts and more about boundaries: what the model is allowed to see, what it is allowed to compute, and who signs off on what it says. Nights taught me the opposite lesson: software should also make you feel something. This archive holds both. The classified files pay the bills. The exhibits keep me weird.",
+    "Four years inside enterprise CRM taught me how software behaves at scale — multi-tenant platforms, config-driven UIs, systems that cannot go down. I work both sides of the wire: Angular in the browser, and the services behind it talking over REST APIs and shipped through Docker and Jenkins. Lately the interesting half is KAIS — putting language models inside software that cannot afford to be wrong, which turns out to be less about prompts and more about boundaries: what the model is allowed to see, what it is allowed to compute, and who signs off on what it says. Nights taught me the opposite lesson: software should also make you feel something. This archive holds both. The classified files pay the bills. The exhibits keep me weird.",
   facts: [
     "EXP: 3.5+ YRS",
     "CURRENT HOST: KEBS · 4 PRODUCT LINES",
-    "BACKEND: JAVA · SPRING BOOT · NODE",
     "DIET: 100G PROTEIN/DAY",
     "KNOWN WEAKNESS: SIDE PROJECTS",
   ],
@@ -78,10 +76,6 @@ export const skillGroups: SkillGroup[] = [
   {
     label: "BACKEND",
     items: [
-      "Java",
-      "Spring Boot",
-      "Spring Data JPA",
-      "Microservices",
       "REST APIs",
       "Node.js",
       "Express",
@@ -142,16 +136,8 @@ export const exhibits: Exhibit[] = [
     fileNo: "FILE №001",
     title: "LEADS",
     description:
-      "The Leads Management System at KEBS, built end to end on Java and Spring Boot in a microservices architecture — capture, tracking, qualification and conversion into Opportunity and Quote-to-Cash — with the Angular console on top of its REST APIs.",
-    stack: [
-      "Java",
-      "Spring Boot",
-      "Microservices",
-      "REST APIs",
-      "MySQL",
-      "Angular",
-      "Docker · Jenkins",
-    ],
+      "The Leads Management System at KEBS, built end to end — capture, tracking, qualification and conversion into Opportunity and Quote-to-Cash — backend services exposing the REST APIs the Angular console runs on.",
+    stack: ["Angular", "REST APIs", "MySQL", "Docker · Jenkins"],
     clazz: "ENTERPRISE",
     status: "IN PRODUCTION",
   },
@@ -331,7 +317,7 @@ export const incidents: Incident[] = [
     year: "2023",
     title: "ESCALATION",
     detail:
-      "Junior developer. Built the Leads system end to end on Java and Spring Boot microservices, the Exit app (4 personas / 23 screens / 25+ APIs), and the Dockerized demo environments sales still runs on.",
+      "Junior developer. Built the Leads system end to end, the Exit app (4 personas / 23 screens / 25+ APIs), and the Dockerized demo environments sales still runs on.",
   },
   {
     year: "2024–25",
@@ -371,8 +357,6 @@ export const footer = {
   fallingWords: [
     "angular",
     "react",
-    "java",
-    "spring boot",
     "node",
     "mongodb",
     "rag",
@@ -411,9 +395,9 @@ export type ResumeRole = {
 export const boringResume = {
   name: "Syed Abdul Kareem",
   headline:
-    "Forward Deployed Engineer · Full Stack · Java & Spring Boot Microservices · Generative AI · SaaS, CRM & Q2C",
+    "Forward Deployed Engineer · Full Stack · Generative AI · SaaS, CRM & Q2C",
   summary:
-    "Full-stack developer with 3.5+ years at KEBS, a multi-tenant CRM and PSA platform, promoted from intern to Forward Deployed Engineer. I own end-to-end delivery for four product lines — CRM, People Allocation, Timesheet, and Integration Systems — sitting between enterprise clients and the codebase: requirements on client calls, solution design, build across Angular, Java/Spring Boot and Node.js, and staying through UAT and go-live. On the backend I work in Java with Spring Boot in a microservices architecture — designing service boundaries, building the REST APIs the front ends consume, working against MySQL and MongoDB, and shipping the services as Docker containers through Jenkins pipelines. I also build the platform's AI layer, KAIS: natural-language search that compiles to validated filters, retrieval-augmented document search over page-level embeddings in MongoDB Atlas Vector Search, and assistant agents for quotation drafting and people allocation — all designed so the model proposes and the platform decides. Known for shipping complex features in days without regressions, and for building the shared libraries and tooling the rest of the team now runs on.",
+    "Full-stack developer with 3.5+ years at KEBS, a multi-tenant CRM and PSA platform, promoted from intern to Forward Deployed Engineer. I own end-to-end delivery for four product lines — CRM, People Allocation, Timesheet, and Integration Systems — sitting between enterprise clients and the codebase: requirements on client calls, solution design, build across Angular and Node.js, and staying through UAT and go-live. I also build the platform's AI layer, KAIS: natural-language search that compiles to validated filters, retrieval-augmented document search over page-level embeddings in MongoDB Atlas Vector Search, and assistant agents for quotation drafting and people allocation — all designed so the model proposes and the platform decides. Known for shipping complex features in days without regressions, and for building the shared libraries and tooling the rest of the team now runs on.",
   roles: [
     {
       title: "Forward Deployed Engineer",
@@ -446,7 +430,7 @@ export const boringResume = {
       org: "KEBS",
       period: "Jun 2023 — Jun 2024",
       bullets: [
-        "Built the Leads Management System end to end on Java and Spring Boot in a microservices architecture — capture, tracking, conversion into CRM and Quote-to-Cash — exposing the REST APIs behind the Angular console and cutting data retrieval time ~40% with debounced search and smart caching.",
+        "Built the Leads Management System end to end — capture, tracking, conversion into CRM and Quote-to-Cash — exposing the REST APIs behind the Angular console and cutting data retrieval time ~40% with debounced search and smart caching.",
         "Delivered the Exit application (HR separation workflows) full stack: 4 personas, 23 screens, 25+ APIs, across 10 sprints.",
         "Set up the multi-tenant demo environment on Docker and Jenkins so sales can spin up isolated, pre-seeded client demos in minutes.",
         "Shipped reporting across the product: Azure DevOps-backed product dashboard, project insight charts, and a real-time CRM activity dashboard.",
